@@ -27,7 +27,6 @@ namespace WebTestAPI
         {
             services.AddMvc();
             services.AddCors();
-
             services.AddDbContext<Db>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
 

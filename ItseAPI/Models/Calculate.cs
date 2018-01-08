@@ -23,7 +23,7 @@ namespace ItseAPI.Models
         public class ResponseModel
         {
             public double WhiteTariffEnergySpending { get; set; }
-            public double CurrentTariffEnergySpending { get; set; }
+            public double ConventionalTariffEnergySpending { get; set; }
         }
 
     }
