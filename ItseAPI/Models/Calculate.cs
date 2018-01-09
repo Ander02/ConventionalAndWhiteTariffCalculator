@@ -22,6 +22,11 @@ namespace ItseAPI.Models
 
         public class ResponseModel
         {
+            public Guid Id { get; set; }
+            public double Power { get; set; }
+            public int Quantity { get; set; }
+            public List<DateInitAndFinish> UseOfMounth { get; set; }
+            public long TotalMitutes { get; set; }
             public double WhiteTariffEnergySpending { get; set; }
             public double ConventionalTariffEnergySpending { get; set; }
         }
