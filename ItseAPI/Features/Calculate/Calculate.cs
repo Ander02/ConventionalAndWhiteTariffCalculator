@@ -17,18 +17,20 @@ namespace ItseAPI.Features.Calculate
 
         public class Command : IRequest<Result>
         {
+            public string Name { get; set; }
             public double Power { get; set; }
             public int Quantity { get; set; }
-            public List<DateInitAndFinish> UseOfMounth { get; set; }
+            public List<DateInitAndFinish> UseOfMonth { get; set; }
         }
 
         public class Result
         {
             public Guid Id { get; set; }
+            public string Name { get; set; }
             public double Power { get; set; }
             public int Quantity { get; set; }
-            public List<DateInitAndFinish> UseOfMounth { get; set; }
-            public long TotalMitutes { get; set; }
+            public List<DateInitAndFinish> UseOfMonth { get; set; }
+            public double TotalMitutes { get; set; }
             public double WhiteTariffEnergySpending { get; set; }
             public double ConventionalTariffEnergySpending { get; set; }
         }
@@ -44,19 +46,17 @@ namespace ItseAPI.Features.Calculate
 
             public async Task<Result> Handle(Command req)
             {
-                var c = new Models.Calculate.DateInitAndFinish()
+                return new Result()
                 {
-                    DateTimeInit = new DateTime(2018, 01, 01, 01, 00, 00),
-                    DateTimeFinish = new DateTime(2018, 01, 03, 23, 00, 00)
+                    Id = Guid.NewGuid(),
+                    Name = req.Name,
+                    Power = req.Power,
+                    Quantity = req.Quantity,
+                    UseOfMonth = req.UseOfMonth,
+                    ConventionalTariffEnergySpending = await TariffUtil.ConventionalTariffCalc(db, req),
+                    WhiteTariffEnergySpending = await TariffUtil.WhiteTariffCalc(db, req),
+                    TotalMitutes = await TariffUtil.TotalMinutes(db, req.UseOfMonth)
                 };
-
-                var e = await TariffAuxMethods.VerifyDateConsistenceAsync(db, c.DateTimeInit, c.DateTimeFinish);
-
-
-                var conventionalTariff = TariffAuxMethods.ConventionalTariffCalc(req);
-                var whiteTariff = TariffAuxMethods.WhiteTariffCalc(req);
-
-                return null;
             }
         }
     }

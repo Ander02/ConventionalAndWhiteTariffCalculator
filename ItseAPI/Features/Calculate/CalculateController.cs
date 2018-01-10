@@ -18,11 +18,11 @@ namespace ItseAPI.Features.Calculate
         }
 
         [HttpPost]
-        public async Task<ActionResult> Calculate([FromBody] Calculate.Command value)
+        public async Task<Calculate.Result> Calculate([FromBody] Calculate.Command value)
         {
             var result = await mediator.Send(value);
 
-            return null;
+            return result;
         }
     }
 }

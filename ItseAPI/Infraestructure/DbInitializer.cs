@@ -19,7 +19,7 @@ namespace ItseAPI.Infraestructure
                 Name = "ConventionalTariff",
                 InitTime = new TimeSpan(00, 00, 00),
                 FinishTime = new TimeSpan(23, 59, 59),
-                BaseValue = 491.61
+                BaseValue = 419.61
             });
 
             await db.Tariff.AddAsync(new Tariff()
