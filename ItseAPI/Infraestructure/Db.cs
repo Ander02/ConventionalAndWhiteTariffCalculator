@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Threading;
 using ItseAPI.Domain;
-using ItseAPI.Domain;
 
 namespace ItseAPI.Infraestructure
 {

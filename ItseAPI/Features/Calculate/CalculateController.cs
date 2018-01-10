@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ItseAPI.Features.Calculate
 {
+    [Route("/api/[controller]")]
     public class CalculateController : Controller
     {
         private IMediator mediator;
@@ -19,15 +20,6 @@ namespace ItseAPI.Features.Calculate
         [HttpPost]
         public async Task<ActionResult> Calculate([FromBody] Calculate.Command value)
         {
-            var c = new Models.Calculate.DateInitAndFinish()
-            {
-                DateTimeInit = new DateTime(2018, 01, 01, 00, 00, 00),
-                DateTimeFinish = new DateTime(2018, 01, 01, 23, 20, 00)
-            };
-
-            var e = TariffAuxMethods.SamePeriod(c.DateTimeInit, c.DateTimeFinish);
-
-
             var result = await mediator.Send(value);
 
             return null;

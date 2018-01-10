@@ -42,17 +42,22 @@ namespace ItseAPI.Features.Calculate
                 this.db = db;
             }
 
-            public Task<Result> Handle(Command req)
+            public async Task<Result> Handle(Command req)
             {
-                var conventionalTariff = TariffAuxMethods.CurrentTariffCalc(req);
+                var c = new Models.Calculate.DateInitAndFinish()
+                {
+                    DateTimeInit = new DateTime(2018, 01, 01, 01, 00, 00),
+                    DateTimeFinish = new DateTime(2018, 01, 03, 23, 00, 00)
+                };
+
+                var e = await TariffAuxMethods.VerifyDateConsistenceAsync(db, c.DateTimeInit, c.DateTimeFinish);
+
+
+                var conventionalTariff = TariffAuxMethods.ConventionalTariffCalc(req);
                 var whiteTariff = TariffAuxMethods.WhiteTariffCalc(req);
 
                 return null;
             }
         }
-
-
-
-
     }
 }
