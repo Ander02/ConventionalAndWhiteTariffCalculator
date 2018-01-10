@@ -7,26 +7,36 @@ using DateTimeExtensions;
 using DateTimeExtensions.TimeOfDay;
 using DateTimeExtensions.WorkingDays;
 
-namespace ItseAPI.Features
+namespace ItseAPI.Features.Calculate
 {
-    public class CalculateMethods
+    public static class TariffValues
     {
-        public static double WhiteTariffCalc(Calculate.RequestModel data)
+        public const double Conventional = 419.61;
+        public const double OffPeack = 353.25;
+        public const double Intermediate = 496.66;
+        public const double OnPeack = 760.21;
+    }
+
+    public class TariffAuxMethods
+    {
+        //Método que calcula o valor da tarifa por equipamento no novo sistema
+        public static double WhiteTariffCalc(Calculate.Command req)
         {
             double TotalMinutesOffPeack = 0;
             double TotalMinutesIntermediate = 0;
             double TotalMinutesOnPeack = 0;
 
             double consumoEquip = 0;
-            foreach (var item in data.UseOfMounth)
+            foreach (var item in req.UseOfMounth)
             {
-
+                DateTime d = new DateTime();
             }
 
             return 0;
         }
 
-        public static double CurrentTariffCalc(Calculate.RequestModel req)
+        //Método que calcula o valor da tarifa por equipamento no atual sistema
+        public static double CurrentTariffCalc(Calculate.Command req)
         {
             double consumoEquip = 0;
             foreach (var dateInterval in req.UseOfMounth)
@@ -38,14 +48,6 @@ namespace ItseAPI.Features
             consumoEquip = consumoEquip * (TariffValues.Conventional / 1000) * 30;
 
             return Math.Abs(consumoEquip);
-        }
-
-        public struct TariffValues
-        {
-            public const double Conventional = 419.61;
-            public const double OffPeack = 353.25;
-            public const double Intermediate = 496.66;
-            public const double OnPeack = 760.21;
         }
 
         public class DateConsistence
@@ -114,25 +116,15 @@ namespace ItseAPI.Features
             var dateConsistenceList = new List<DateConsistence>();
 
             //Criar Lista de Datas
-            var initDayDateList = new List<DateTime>();
-            var finishDayDateList = new List<DateTime>();
+            var periodDateList = new List<Calculate.DateInitAndFinish>();
+
             while (dateInit < dateFinish)
             {
-                initDayDateList.Add(dateInit);
-
-                if (dateInit.AddDays(1) < dateFinish)
-                {
-                    finishDayDateList.Add(dateInit.AddDays(1));
-                }
-                else
-                {
-                    finishDayDateList.Add(dateFinish);
-                }
-                dateInit = dateInit.AddDays(1);
+                Calculate.DateInitAndFinish date = new Calculate.DateInitAndFinish();
+                date.DateTimeInit = dateInit;
+                
             }
             
-
-
             //Se as Datas estão em períodos iguais
             if (SamePeriod(dateInit, dateFinish))
             {
@@ -208,7 +200,7 @@ namespace ItseAPI.Features
             //As datas estão em períodos diferentes
             else
             {
-
+                
 
 
 

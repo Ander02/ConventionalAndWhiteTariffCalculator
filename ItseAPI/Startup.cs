@@ -8,10 +8,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using WebTestAPI.Infraestructure;
+using ItseAPI.Infraestructure;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
 
-namespace WebTestAPI
+namespace ItseAPI
 {
     public class Startup
     {
@@ -28,6 +29,9 @@ namespace WebTestAPI
             services.AddMvc();
             services.AddCors();
             services.AddDbContext<Db>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddMediatR(typeof(Startup));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
