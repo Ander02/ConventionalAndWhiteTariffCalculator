@@ -29,8 +29,8 @@ namespace ItseAPI.Features.Calculate
             public string Name { get; set; }
             public double Power { get; set; }
             public int Quantity { get; set; }
+            public TimeSpan TimeOfUse { get; set; }
             public List<DateInitAndFinish> UseOfMonth { get; set; }
-            public double TotalMitutes { get; set; }
             public double WhiteTariffEnergySpending { get; set; }
             public double ConventionalTariffEnergySpending { get; set; }
         }
@@ -55,7 +55,7 @@ namespace ItseAPI.Features.Calculate
                     UseOfMonth = req.UseOfMonth,
                     ConventionalTariffEnergySpending = await TariffUtil.ConventionalTariffCalc(db, req),
                     WhiteTariffEnergySpending = await TariffUtil.WhiteTariffCalc(db, req),
-                    TotalMitutes = await TariffUtil.TotalMinutes(db, req.UseOfMonth)
+                    TimeOfUse = TariffUtil.TotalTime(req.UseOfMonth)
                 };
             }
         }

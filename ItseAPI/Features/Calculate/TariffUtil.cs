@@ -18,27 +18,26 @@ namespace ItseAPI.Features.Calculate
         //Método que calcula o valor da tarifa por equipamento no novo sistema
         public static async Task<double> WhiteTariffCalc(Db dataBaseContext, Command req)
         {
-            double equipConsume = 0;
-            double total = 0;
-
             var offPeackITariffValue = (await dataBaseContext.Tariff.Where(t => t.Name.Contains("WhiteTariffOffPeackI")).FirstAsync()).BaseValue;
+
+            double total = 0;
 
             foreach (var dateInterval in req.UseOfMonth)
             {
                 var periodList = await DateConsistenceList(dataBaseContext, dateInterval.DateTimeInit, dateInterval.DateTimeFinish);
+                double equipConsume = 0;
 
                 foreach (var period in periodList)
                 {
-                    equipConsume += req.Power * req.Quantity * (period.TotalMinutes / 60) / 1000;
-                    total += equipConsume * (period.TariffValue / 1000) * 22 + equipConsume * (offPeackITariffValue / 1000) * 8;
+                    equipConsume = req.Power * req.Quantity * (period.TotalMinutes / 60) / 1000;
+                    total += (equipConsume * (period.TariffValue / 1000));
                 }
             }
-
             return Math.Abs(total);
         }
 
         //Método que calcula o valor da tarifa por equipamento no atual sistema
-        public static async Task<double> ConventionalTariffCalc(Db dataBaseContext, Calculate.Command req)
+        public static async Task<double> ConventionalTariffCalc(Db dataBaseContext, Command req)
         {
             var conventionalTariffValue = (await dataBaseContext.Tariff.Where(t => t.Name.Contains("Conventional")).FirstAsync()).BaseValue;
 
@@ -49,9 +48,10 @@ namespace ItseAPI.Features.Calculate
 
                 equipConsume += req.Power * req.Quantity * (diff.TotalMinutes / 60) / 1000;
             }
-            equipConsume = equipConsume * (conventionalTariffValue / 1000) * 30;
 
-            return Math.Abs(equipConsume);
+            double total = (equipConsume * (conventionalTariffValue / 1000)) * (1 + TotalTime(req.UseOfMonth).TotalDays);
+
+            return Math.Abs(total);
         }
 
         //Date Consistence Object Aux
@@ -64,7 +64,7 @@ namespace ItseAPI.Features.Calculate
         //Método que verifica se duas datas estão no mesmo dia
         public static bool SameDay(DateTime dateInit, DateTime dateFinish)
         {
-            return dateInit.DayOfYear == dateFinish.DayOfYear;
+            return (dateInit.DayOfYear == dateFinish.DayOfYear) && (dateInit.Year == dateFinish.Year);
         }
 
         //Método que verifica se uma data está no período indicado
@@ -138,7 +138,7 @@ namespace ItseAPI.Features.Calculate
 
         public static double TotalMinutes(DateTime data1, DateTime data2)
         {
-            return Math.Abs((data1 - data2).TotalMinutes);
+            return Math.Abs((data2 - data1).TotalMinutes);
         }
 
         public static double TotalMinutes(List<DateConsistence> dateConsistenceList)
@@ -166,6 +166,24 @@ namespace ItseAPI.Features.Calculate
             }
 
             return total;
+        }
+
+        public static TimeSpan TotalTime(List<DateInitAndFinish> dateList)
+        {
+            TimeSpan totalTime = new TimeSpan();
+
+            foreach (var dateInterval in dateList)
+            {
+                if (dateInterval.DateTimeFinish > dateInterval.DateTimeInit)
+                {
+                    totalTime += dateInterval.DateTimeFinish - dateInterval.DateTimeInit;
+                }
+                else
+                {
+                    totalTime += dateInterval.DateTimeInit - dateInterval.DateTimeFinish;
+                }
+            }
+            return totalTime;
         }
 
     }
