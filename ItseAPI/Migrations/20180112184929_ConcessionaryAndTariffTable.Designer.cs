@@ -11,8 +11,8 @@ using System;
 namespace ItseAPI.Migrations
 {
     [DbContext(typeof(Db))]
-    [Migration("20180111181757_RenameProductToEquipament")]
-    partial class RenameProductToEquipament
+    [Migration("20180112184929_ConcessionaryAndTariffTable")]
+    partial class ConcessionaryAndTariffTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,20 @@ namespace ItseAPI.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("ItseAPI.Domain.Concessionary", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("City");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Concessionary");
+                });
 
             modelBuilder.Entity("ItseAPI.Domain.Equipament", b =>
                 {
@@ -42,6 +56,8 @@ namespace ItseAPI.Migrations
 
                     b.Property<double>("BaseValue");
 
+                    b.Property<Guid>("ConcessionaryId");
+
                     b.Property<TimeSpan>("FinishTime");
 
                     b.Property<TimeSpan>("InitTime");
@@ -50,7 +66,17 @@ namespace ItseAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ConcessionaryId");
+
                     b.ToTable("Tariff");
+                });
+
+            modelBuilder.Entity("ItseAPI.Domain.Tariff", b =>
+                {
+                    b.HasOne("ItseAPI.Domain.Concessionary", "Concessionary")
+                        .WithMany("Tariffs")
+                        .HasForeignKey("ConcessionaryId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

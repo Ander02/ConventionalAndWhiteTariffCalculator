@@ -14,8 +14,19 @@ namespace ItseAPI.Infraestructure
             //Inicializa o Banco
             logger.LogInformation("Starting database");
 
+            await db.Concessionary.AddAsync(new Concessionary()
+            {
+                Name = "AES Eletropaulo",
+                City = "São Paulo"
+            });
+
+            await db.SaveChangesAsync();
+
+            var concessionary = db.Concessionary.Where(c => c.Name.Contains("AES Eletropaulo")).FirstOrDefault();
+
             await db.Tariff.AddAsync(new Tariff()
             {
+                ConcessionaryId = concessionary.Id,
                 Name = "ConventionalTariff",
                 InitTime = new TimeSpan(00, 00, 00),
                 FinishTime = new TimeSpan(23, 59, 59),
@@ -24,41 +35,46 @@ namespace ItseAPI.Infraestructure
 
             await db.Tariff.AddAsync(new Tariff()
             {
+                ConcessionaryId = concessionary.Id,
                 Name = "WhiteTariffOffPeackI",
-                InitTime = new TimeSpan(00, 00, 01),
-                FinishTime = new TimeSpan(16, 30, 00),
+                InitTime = new TimeSpan(00, 00, 00),
+                FinishTime = new TimeSpan(16, 29, 59),
                 BaseValue = 353.25
             });
 
             await db.Tariff.AddAsync(new Tariff()
             {
+                ConcessionaryId = concessionary.Id,
                 Name = "WhiteTariffIntermediateI",
-                InitTime = new TimeSpan(16, 30, 01),
-                FinishTime = new TimeSpan(17, 30, 00),
+                InitTime = new TimeSpan(16, 30, 00),
+                FinishTime = new TimeSpan(17, 29, 59),
                 BaseValue = 496.66
             });
 
             await db.Tariff.AddAsync(new Tariff()
             {
+                ConcessionaryId = concessionary.Id,
                 Name = "WhiteTariffOnPeack",
-                InitTime = new TimeSpan(17, 30, 01),
-                FinishTime = new TimeSpan(20, 30, 00),
+                InitTime = new TimeSpan(17, 30, 00),
+                FinishTime = new TimeSpan(20, 29, 59),
                 BaseValue = 760.21
             });
 
             await db.Tariff.AddAsync(new Tariff()
             {
+                ConcessionaryId = concessionary.Id,
                 Name = "WhiteTariffIntermediateII",
-                InitTime = new TimeSpan(20, 30, 01),
-                FinishTime = new TimeSpan(21, 30, 00),
+                InitTime = new TimeSpan(20, 30, 00),
+                FinishTime = new TimeSpan(21, 29, 59),
                 BaseValue = 496.66
             });
 
             await db.Tariff.AddAsync(new Tariff()
             {
+                ConcessionaryId = concessionary.Id,
                 Name = "WhiteTariffOffPeackII",
-                InitTime = new TimeSpan(21, 30, 01),
-                FinishTime = new TimeSpan(00, 00, 00),
+                InitTime = new TimeSpan(21, 30, 00),
+                FinishTime = new TimeSpan(23, 59, 59),
                 BaseValue = 353.25
             });
 
