@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ItseAPI.Features.Product
+namespace ItseAPI.Features.Equipament
 {
-    public class SearchOneProduct
+    public class SearchOneEquipament
     {
         public class Query : IRequest<Result>
         {
@@ -34,7 +34,7 @@ namespace ItseAPI.Features.Product
 
             public async Task<Result> Handle(Query query)
             {
-                var p = await db.Product.FindAsync(query.Id);
+                var p = await db.Equipament.FindAsync(query.Id);
 
                 return new Result()
                 {

@@ -15,7 +15,7 @@ namespace ItseAPI.Infraestructure
     public class Db : DbContext
     {
         #region Tables
-        public DbSet<Product> Product { get; set; }
+        public DbSet<Equipament> Equipament { get; set; }
         public DbSet<Tariff> Tariff { get; set; }
         #endregion
 
@@ -26,7 +26,7 @@ namespace ItseAPI.Infraestructure
 
         protected override void OnModelCreating(ModelBuilder m)
         {
-            m.Entity<Product>().ToTable(nameof(Product));
+            m.Entity<Equipament>().ToTable(nameof(Equipament));
             m.Entity<Tariff>().ToTable(nameof(Tariff));
         }
     }

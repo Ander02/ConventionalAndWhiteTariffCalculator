@@ -8,9 +8,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using ItseAPI.Infraestructure;
 
-namespace ItseAPI.Features.Product
+namespace ItseAPI.Features.Equipament
 {
-    public class RegisterProduct
+    public class RegisterEquipament
     {
         public class Command : IRequest<Result>
         {
@@ -23,6 +23,7 @@ namespace ItseAPI.Features.Product
             public CommandValidator()
             {
                 RuleFor(c => c.Name).NotNull().NotEmpty().MaximumLength(50);
+                RuleFor(c => c.DefaultPower).NotNull().NotEmpty().GreaterThan(0);
             }
         }
 
@@ -44,20 +45,20 @@ namespace ItseAPI.Features.Product
 
             public async Task<Result> Handle(Command command)
             {
-                var product = new Domain.Product()
+                var Equipament = new Domain.Equipament()
                 {
                     Name = command.Name,
                     DefaultPower = command.DefaultPower
                 };
 
-                await db.Product.AddAsync(product);
+                await db.Equipament.AddAsync(Equipament);
                 await db.SaveChangesAsync();
 
                 return new Result()
                 {
-                    Id = product.Id,
-                    Name = product.Name,
-                    DefaultPower = product.DefaultPower
+                    Id = Equipament.Id,
+                    Name = Equipament.Name,
+                    DefaultPower = Equipament.DefaultPower
                 };
             }
         }

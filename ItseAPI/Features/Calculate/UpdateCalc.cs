@@ -1,16 +1,18 @@
 ﻿using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ItseAPI.Infraestructure;
 using FluentValidation;
 
 namespace ItseAPI.Features.Calculate
 {
-    public class Calculate
+    public class UpdateCalc
     {
         public class Command : IRequest<Result>
         {
+            public Guid Id { get; set; }
             public string Name { get; set; }
             public double Power { get; set; }
             public int Quantity { get; set; }
@@ -21,6 +23,7 @@ namespace ItseAPI.Features.Calculate
         {
             public CommandValidator()
             {
+                RuleFor(c => c.Id).NotEmpty().NotNull();
                 RuleFor(c => c.Power).NotEmpty().NotNull().GreaterThanOrEqualTo(0);
                 RuleFor(c => c.Quantity).NotEmpty().NotNull().GreaterThanOrEqualTo(0);
             }
@@ -51,7 +54,7 @@ namespace ItseAPI.Features.Calculate
             {
                 return new Result()
                 {
-                    Id = Guid.NewGuid(),
+                    Id = req.Id,
                     Name = req.Name,
                     Power = req.Power,
                     Quantity = req.Quantity,

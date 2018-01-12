@@ -1,5 +1,4 @@
-﻿using ItseAPI.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,20 +35,57 @@ namespace ItseAPI.Features.Calculate
             return Math.Abs(total);
         }
 
+        //Método que calcula o valor da tarifa por equipamento no novo sistema
+        public static async Task<double> WhiteTariffCalc(Db dataBaseContext, double power, int quantity, List<DateInitAndFinish> useOfMonth)
+        {
+            double total = 0;
+
+            foreach (var dateInterval in useOfMonth)
+            {
+                var periodList = await DateConsistenceList(dataBaseContext, dateInterval.DateTimeInit, dateInterval.DateTimeFinish);
+                double equipConsume = 0;
+
+                foreach (var period in periodList)
+                {
+                    equipConsume = power * quantity * (period.TotalMinutes / 60) / 1000;
+                    var t = (equipConsume * (period.TariffValue / 1000));
+                    total += (equipConsume * (period.TariffValue / 1000));
+                }
+            }
+            return Math.Abs(total);
+        }
+
         //Método que calcula o valor da tarifa por equipamento no atual sistema
         public static async Task<double> ConventionalTariffCalc(Db dataBaseContext, Command req)
         {
             var conventionalTariffValue = (await dataBaseContext.Tariff.Where(t => t.Name.Contains("Conventional")).FirstAsync()).BaseValue;
 
             double equipConsume = 0;
+            double total = 0;
             foreach (var dateInterval in req.UseOfMonth)
             {
                 var diff = dateInterval.DateTimeFinish - dateInterval.DateTimeInit;
 
-                equipConsume += req.Power * req.Quantity * (diff.TotalMinutes / 60) / 1000;
+                equipConsume = req.Power * req.Quantity * (diff.TotalMinutes / 60) / 1000;
+                total += (equipConsume * (conventionalTariffValue / 1000));
             }
 
-            double total = (equipConsume * (conventionalTariffValue / 1000)) * (1 + TotalTime(req.UseOfMonth).TotalDays);
+            return Math.Abs(total);
+        }
+
+        public static async Task<double> ConventionalTariffCalc(Db dataBaseContext, double power, int quantity, List<DateInitAndFinish> useOfMonth)
+        {
+            var conventionalTariffValue = (await dataBaseContext.Tariff.Where(t => t.Name.Contains("Conventional")).FirstAsync()).BaseValue;
+
+            double equipConsume = 0;
+            double total = 0;
+            foreach (var dateInterval in useOfMonth)
+            {
+                var diff = dateInterval.DateTimeFinish - dateInterval.DateTimeInit;
+
+                equipConsume = power * quantity * (diff.TotalMinutes / 60) / 1000;
+                total += (equipConsume * (conventionalTariffValue / 1000));
+            }
 
             return Math.Abs(total);
         }
@@ -59,12 +95,6 @@ namespace ItseAPI.Features.Calculate
         {
             public double TariffValue { get; set; }
             public double TotalMinutes { get; set; }
-        }
-
-        //Método que verifica se duas datas estão no mesmo dia
-        public static bool SameDay(DateTime dateInit, DateTime dateFinish)
-        {
-            return (dateInit.DayOfYear == dateFinish.DayOfYear) && (dateInit.Year == dateFinish.Year);
         }
 
         //Método que verifica se uma data está no período indicado
@@ -136,6 +166,12 @@ namespace ItseAPI.Features.Calculate
             return dateConsistenceList;
         }
 
+        //Método que verifica se duas datas estão no mesmo dia
+        public static bool SameDay(DateTime dateInit, DateTime dateFinish)
+        {
+            return (dateInit.DayOfYear == dateFinish.DayOfYear) && (dateInit.Year == dateFinish.Year);
+        }
+
         public static double TotalMinutes(DateTime data1, DateTime data2)
         {
             return Math.Abs((data2 - data1).TotalMinutes);
@@ -185,6 +221,5 @@ namespace ItseAPI.Features.Calculate
             }
             return totalTime;
         }
-
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ItseAPI.Domain
 {
-    public class Product
+    public class Equipament
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

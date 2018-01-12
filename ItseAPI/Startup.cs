@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using ItseAPI.Infraestructure;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
+using FluentValidation.AspNetCore;
 
 namespace ItseAPI
 {
@@ -26,10 +27,23 @@ namespace ItseAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-            services.AddCors();
-            services.AddDbContext<Db>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(ValidationActionFilter));
+            })
+            .AddFeatureFolders()
+            .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>())
+            .AddJsonOptions(options =>
+            {
+                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+            });
 
+            services.AddDbContext<Db>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddCors();
             services.AddMediatR(typeof(Startup));
 
         }
@@ -41,6 +55,7 @@ namespace ItseAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
             app.UseMvc();
         }
     }

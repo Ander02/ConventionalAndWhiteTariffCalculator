@@ -1,6 +1,5 @@
 ﻿using ItseAPI.Features;
 using ItseAPI.Features.Calculate;
-using ItseAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -8,20 +7,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace ItseAPI.Features.Product
+namespace ItseAPI.Features.Equipament
 {
     [Route("api/[controller]")]
-    public class ProductController : Controller
+    public class EquipamentController : Controller
     {
         private IMediator mediator;
 
-        public ProductController(IMediator mediator)
+        public EquipamentController(IMediator mediator)
         {
             this.mediator = mediator;
         }
 
         [HttpPost]
-        public async Task<ActionResult> RegisterProduct([FromBody] RegisterProduct.Command value)
+        public async Task<ActionResult> RegisterEquipament([FromBody] RegisterEquipament.Command value)
         {
             var result = await mediator.Send(value);
 
@@ -29,7 +28,7 @@ namespace ItseAPI.Features.Product
         }
 
         [HttpGet]
-        public async Task<List<SearchManyProducts.Result>> SearchManyProduct([FromQuery] SearchManyProducts.Query query)
+        public async Task<List<SearchManyEquipaments.Result>> SearchManyEquipaments([FromQuery] SearchManyEquipaments.Query query)
         {
             var result = await mediator.Send(query);
 
@@ -38,7 +37,7 @@ namespace ItseAPI.Features.Product
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<SearchOneProduct.Result> SearchOneProduct([FromRoute] SearchOneProduct.Query query)
+        public async Task<SearchOneEquipament.Result> SearchOneEquipament([FromRoute] SearchOneEquipament.Query query)
         {
             var result = await mediator.Send(query);
 

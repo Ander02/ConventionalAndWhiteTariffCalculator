@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ItseAPI.Features.Product
+namespace ItseAPI.Features.Equipament
 {
-    public class SearchManyProducts
+    public class SearchManyEquipaments
     {
         public class Query : IRequest<List<Result>>
         {
@@ -35,8 +35,11 @@ namespace ItseAPI.Features.Product
 
             public async Task<List<Result>> Handle(Query query)
             {
-                var q = db.Product
+                if (query.Name == null) query.Name = "";
+
+                var q = db.Equipament
                     .Where(p => p.Name.Contains(query.Name))
+                    .OrderBy(p => p.Name)
                     .Take(query.Limit)
                     .AsQueryable();
 

@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ItseAPI.Features.Calculate
@@ -20,6 +18,16 @@ namespace ItseAPI.Features.Calculate
         [HttpPost]
         public async Task<Calculate.Result> Calculate([FromBody] Calculate.Command value)
         {
+            var result = await mediator.Send(value);
+
+            return result;
+        }
+
+        [HttpPatch]
+        [Route("{id}")]
+        public async Task<UpdateCalc.Result> UpdateCalc([FromRoute] Guid id, [FromBody] UpdateCalc.Command value)
+        {
+            value.Id = id;
             var result = await mediator.Send(value);
 
             return result;
