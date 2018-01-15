@@ -1,5 +1,5 @@
-﻿using ItseAPI.Features;
-using ItseAPI.Features.Calculate;
+﻿using ConventionalAndWhiteTariffCalculator.Features;
+using ConventionalAndWhiteTariffCalculator.Features.Calculate;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -7,9 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace ItseAPI.Features.Equipament
+namespace ConventionalAndWhiteTariffCalculator.Features.Equipament
 {
-    [Route("api/[controller]")]
+    [Route("/[controller]")]
     public class EquipamentController : Controller
     {
         private IMediator mediator;

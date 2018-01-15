@@ -7,10 +7,10 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using ItseAPI.Infraestructure;
+using ConventionalAndWhiteTariffCalculator.Infraestructure;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ItseAPI
+namespace ConventionalAndWhiteTariffCalculator
 {
     public class Program
     {

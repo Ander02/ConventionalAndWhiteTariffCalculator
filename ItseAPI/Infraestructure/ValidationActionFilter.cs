@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ItseAPI.Infraestructure
+namespace ConventionalAndWhiteTariffCalculator.Infraestructure
 {
     public class ValidationActionFilter : IActionFilter
     {

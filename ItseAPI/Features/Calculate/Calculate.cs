@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ItseAPI.Infraestructure;
+using ConventionalAndWhiteTariffCalculator.Infraestructure;
 using FluentValidation;
 
-namespace ItseAPI.Features.Calculate
+namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 {
     public class Calculate
     {

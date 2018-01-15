@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ItseAPI.Domain
+namespace ConventionalAndWhiteTariffCalculator.Domain
 {
     public class Concessionary
     {

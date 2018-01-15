@@ -1,4 +1,4 @@
-﻿using ItseAPI.Infraestructure;
+﻿using ConventionalAndWhiteTariffCalculator.Infraestructure;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ItseAPI.Features.Equipament
+namespace ConventionalAndWhiteTariffCalculator.Features.Equipament
 {
     public class SearchOneEquipament
     {

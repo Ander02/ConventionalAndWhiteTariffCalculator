@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ItseAPI.Migrations
+namespace ConventionalAndWhiteTariffCalculator.Migrations
 {
     public partial class InitDB : Migration
     {

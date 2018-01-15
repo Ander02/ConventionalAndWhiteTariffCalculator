@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using DateTimeExtensions;
 using DateTimeExtensions.TimeOfDay;
-using ItseAPI.Infraestructure;
-using ItseAPI.Domain;
+using ConventionalAndWhiteTariffCalculator.Infraestructure;
+using ConventionalAndWhiteTariffCalculator.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace ItseAPI.Features.Calculate
+namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 {
     public class TariffUtil
     {

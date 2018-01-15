@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using ItseAPI.Domain;
+using ConventionalAndWhiteTariffCalculator.Domain;
 
-namespace ItseAPI.Infraestructure
+namespace ConventionalAndWhiteTariffCalculator.Infraestructure
 {
     public class DbInitializer
     {

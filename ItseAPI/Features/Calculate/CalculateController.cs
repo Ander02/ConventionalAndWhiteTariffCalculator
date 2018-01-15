@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
-namespace ItseAPI.Features.Calculate
+namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 {
-    [Route("/api/[controller]")]
+    [Route("/[controller]")]
     public class CalculateController : Controller
     {
         private IMediator mediator;

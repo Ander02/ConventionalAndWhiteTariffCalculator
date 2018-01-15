@@ -8,12 +8,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using ItseAPI.Infraestructure;
+using ConventionalAndWhiteTariffCalculator.Infraestructure;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using FluentValidation.AspNetCore;
 
-namespace ItseAPI
+namespace ConventionalAndWhiteTariffCalculator
 {
     public class Startup
     {

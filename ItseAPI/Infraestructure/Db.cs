@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Threading;
-using ItseAPI.Domain;
+using ConventionalAndWhiteTariffCalculator.Domain;
 
-namespace ItseAPI.Infraestructure
+namespace ConventionalAndWhiteTariffCalculator.Infraestructure
 {
     public class Db : DbContext
     {

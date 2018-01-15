@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ItseAPI.Infraestructure;
+using ConventionalAndWhiteTariffCalculator.Infraestructure;
 
-namespace ItseAPI.Features.Equipament
+namespace ConventionalAndWhiteTariffCalculator.Features.Equipament
 {
     public class RegisterEquipament
     {
