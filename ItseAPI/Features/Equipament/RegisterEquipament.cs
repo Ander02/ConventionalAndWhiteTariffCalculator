@@ -23,7 +23,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipament
             public CommandValidator()
             {
                 RuleFor(c => c.Name).NotNull().NotEmpty().MaximumLength(50);
-                RuleFor(c => c.DefaultPower).NotNull().NotEmpty().GreaterThan(0);
+                RuleFor(c => c.DefaultPower).NotNull().NotEmpty().GreaterThanOrEqualTo(0);
             }
         }
 

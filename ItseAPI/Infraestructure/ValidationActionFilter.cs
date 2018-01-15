@@ -19,7 +19,23 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
         {
             if (!context.ModelState.IsValid)
             {
-                //do something
+                var result = new ContentResult();
+                string content = JsonConvert.SerializeObject(context.ModelState.Select(m => new
+                {
+                    Error = m.Value.Errors.Select(e => e.ErrorMessage).FirstOrDefault()
+                }),
+                new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    NullValueHandling = NullValueHandling.Ignore,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
+
+                result.Content = content;
+                result.ContentType = "application/json";
+
+                context.HttpContext.Response.StatusCode = 400;
+                context.Result = result;
             }
         }
     }

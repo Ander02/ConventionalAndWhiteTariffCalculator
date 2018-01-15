@@ -22,14 +22,30 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
         {
             public CommandValidator()
             {
+                RuleFor(c => c.ConcessionaryId).NotEmpty().NotNull();
                 RuleFor(c => c.Power).NotEmpty().NotNull().GreaterThanOrEqualTo(0);
                 RuleFor(c => c.Quantity).NotEmpty().NotNull().GreaterThanOrEqualTo(0);
+
+                RuleFor(c => c.UseOfMonth).Custom((list, context) =>
+                {
+                    foreach (var item in list)
+                    {
+                        if (item.DateInit > item.DateFinish)
+                        {
+                            context.AddFailure("Data de início deve ser antes da data de fim");
+                        }
+                        if (item.TimeInit > item.TimeFinish)
+                        {
+                            context.AddFailure("Hora de início deve ser antes da Hora de fim");
+                        }
+                    }
+                });
             }
         }
 
         public class Result
         {
-            public Guid ProductId { get; set; }
+            public Guid EquipamentId { get; set; }
             public TimeSpan TimeOfUse { get; set; }
             public double WhiteTariffEnergySpending { get; set; }
             public double ConventionalTariffEnergySpending { get; set; }
@@ -50,7 +66,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 
                 return new Result()
                 {
-                    ProductId = Guid.NewGuid(),
+                    EquipamentId = Guid.NewGuid(),
                     ConventionalTariffEnergySpending = tariffDetail.ConventionalTariffValue,
                     WhiteTariffEnergySpending = tariffDetail.WhiteTariffValue,
                     TimeOfUse = tariffDetail.TimeOfUse

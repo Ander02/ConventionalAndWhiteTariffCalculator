@@ -36,6 +36,7 @@ namespace ConventionalAndWhiteTariffCalculator
             .AddJsonOptions(options =>
             {
                 options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                options.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
             });
 
             services.AddDbContext<Db>(options =>
