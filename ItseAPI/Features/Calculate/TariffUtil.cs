@@ -7,6 +7,7 @@ using DateTimeExtensions.TimeOfDay;
 using ConventionalAndWhiteTariffCalculator.Infraestructure;
 using ConventionalAndWhiteTariffCalculator.Domain;
 using Microsoft.EntityFrameworkCore;
+using DateTimeExtensions.WorkingDays;
 
 namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 {
@@ -82,31 +83,45 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 
             while (dateInit < dateFinish)
             {
-                foreach (var tariff in whiteTariffs)
+                if (dateInit.IsHoliday() || dateInit.DayOfWeek.Equals(DayOfWeek.Saturday) || dateInit.DayOfWeek.Equals(DayOfWeek.Sunday))
                 {
-                    DateTimeInitAndFinish date = new DateTimeInitAndFinish();
-                    date.DateTimeInit = dateInit;
-
-                    if (VerifyPeriod(tariff, dateInit))
+                    //Adiciona na lista consistente
+                    dateConsistenceList.Add(new DateConsistence()
                     {
+                        WhiteTariffValue = whiteTariffs.Where(t => t.Name.Contains("OffPeack")).First().BaseValue,
+                        TotalMinutes = TotalMinutes(dateInit, dateFinish)
+                    });
 
-                        if (tariff.FinishTime > dateFinish.TimeOfDay)
+                    dateInit = dateInit.AddDays(1).SetTime(0, 0, 0);
+                }
+                else
+                {
+                    foreach (var tariff in whiteTariffs)
+                    {
+                        DateTimeInitAndFinish date = new DateTimeInitAndFinish();
+                        date.DateTimeInit = dateInit;
+
+                        if (VerifyPeriod(tariff, dateInit))
                         {
-                            date.DateTimeFinish = dateFinish;
+
+                            if (tariff.FinishTime > dateFinish.TimeOfDay)
+                            {
+                                date.DateTimeFinish = dateFinish;
+                            }
+                            else
+                            {
+                                date.DateTimeFinish = dateInit.SetTime(tariff.FinishTime.Hours, tariff.FinishTime.Minutes, tariff.FinishTime.Seconds);
+                            }
+
+                            //Adiciona na lista consistente
+                            dateConsistenceList.Add(new DateConsistence()
+                            {
+                                WhiteTariffValue = tariff.BaseValue,
+                                TotalMinutes = TotalMinutes(date.DateTimeInit, date.DateTimeFinish)
+                            });
+
+                            dateInit = date.DateTimeFinish.AddSeconds(1);
                         }
-                        else
-                        {
-                            date.DateTimeFinish = dateInit.SetTime(tariff.FinishTime.Hours, tariff.FinishTime.Minutes, tariff.FinishTime.Seconds);
-                        }
-
-                        //Adiciona na lista consistente
-                        dateConsistenceList.Add(new DateConsistence()
-                        {
-                            WhiteTariffValue = tariff.BaseValue,
-                            TotalMinutes = TotalMinutes(date.DateTimeInit, date.DateTimeFinish)
-                        });
-
-                        dateInit = date.DateTimeFinish.AddSeconds(1);
                     }
                 }
             }

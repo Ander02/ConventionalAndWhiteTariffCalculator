@@ -33,12 +33,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
         public class Result
         {
             public Guid ProductId { get; set; }
-            public Guid ConcessionaryId { get; set; }
-            public string Name { get; set; }
-            public double Power { get; set; }
-            public int Quantity { get; set; }
             public TimeSpan TimeOfUse { get; set; }
-            public List<DateInitAndFinish> UseOfMonth { get; set; }
             public double WhiteTariffEnergySpending { get; set; }
             public double ConventionalTariffEnergySpending { get; set; }
         }
@@ -59,14 +54,9 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
                 return new Result()
                 {
                     ProductId = req.ProductId,
-                    ConcessionaryId = req.ConcessionaryId,
-                    Name = req.Name,
-                    Power = req.Power,
-                    Quantity = req.Quantity,
-                    UseOfMonth = req.UseOfMonth,
+                    TimeOfUse = tariffDetail.TimeOfUse,
                     ConventionalTariffEnergySpending = tariffDetail.ConventionalTariffValue,
-                    WhiteTariffEnergySpending = tariffDetail.WhiteTariffValue,
-                    TimeOfUse = tariffDetail.TimeOfUse
+                    WhiteTariffEnergySpending = tariffDetail.WhiteTariffValue
                 };
             }
         }
