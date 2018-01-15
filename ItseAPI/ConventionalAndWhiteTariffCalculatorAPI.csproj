@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Features\Concessionary\" />
     <Folder Include="Filters\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>

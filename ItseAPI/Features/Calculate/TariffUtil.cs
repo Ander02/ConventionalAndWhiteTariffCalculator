@@ -7,7 +7,6 @@ using DateTimeExtensions.TimeOfDay;
 using ConventionalAndWhiteTariffCalculator.Infraestructure;
 using ConventionalAndWhiteTariffCalculator.Domain;
 using Microsoft.EntityFrameworkCore;
-using DateTimeExtensions.WorkingDays;
 
 namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 {
