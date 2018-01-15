@@ -9,6 +9,7 @@ namespace ItseAPI.Domain
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string TariffType { get; set; }
         public TimeSpan InitTime { get; set; }
         public TimeSpan FinishTime { get; set; }
         public double BaseValue { get; set; }

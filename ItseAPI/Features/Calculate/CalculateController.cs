@@ -27,7 +27,7 @@ namespace ItseAPI.Features.Calculate
         [Route("{id}")]
         public async Task<UpdateCalc.Result> UpdateCalc([FromRoute] Guid id, [FromBody] UpdateCalc.Command value)
         {
-            value.Id = id;
+            value.ProductId = id;
             var result = await mediator.Send(value);
 
             return result;

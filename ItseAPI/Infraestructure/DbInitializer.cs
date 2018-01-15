@@ -28,6 +28,7 @@ namespace ItseAPI.Infraestructure
             {
                 ConcessionaryId = concessionary.Id,
                 Name = "ConventionalTariff",
+                TariffType = "Conventional",
                 InitTime = new TimeSpan(00, 00, 00),
                 FinishTime = new TimeSpan(23, 59, 59),
                 BaseValue = 419.61
@@ -36,7 +37,8 @@ namespace ItseAPI.Infraestructure
             await db.Tariff.AddAsync(new Tariff()
             {
                 ConcessionaryId = concessionary.Id,
-                Name = "WhiteTariffOffPeackI",
+                Name = "OffPeackI",
+                TariffType = "WhiteTariff",
                 InitTime = new TimeSpan(00, 00, 00),
                 FinishTime = new TimeSpan(16, 29, 59),
                 BaseValue = 353.25
@@ -45,7 +47,8 @@ namespace ItseAPI.Infraestructure
             await db.Tariff.AddAsync(new Tariff()
             {
                 ConcessionaryId = concessionary.Id,
-                Name = "WhiteTariffIntermediateI",
+                Name = "IntermediateI",
+                TariffType = "WhiteTariff",
                 InitTime = new TimeSpan(16, 30, 00),
                 FinishTime = new TimeSpan(17, 29, 59),
                 BaseValue = 496.66
@@ -54,7 +57,8 @@ namespace ItseAPI.Infraestructure
             await db.Tariff.AddAsync(new Tariff()
             {
                 ConcessionaryId = concessionary.Id,
-                Name = "WhiteTariffOnPeack",
+                Name = "OnPeack",
+                TariffType = "WhiteTariff",
                 InitTime = new TimeSpan(17, 30, 00),
                 FinishTime = new TimeSpan(20, 29, 59),
                 BaseValue = 760.21
@@ -63,7 +67,8 @@ namespace ItseAPI.Infraestructure
             await db.Tariff.AddAsync(new Tariff()
             {
                 ConcessionaryId = concessionary.Id,
-                Name = "WhiteTariffIntermediateII",
+                Name = "IntermediateII",
+                TariffType = "WhiteTariff",
                 InitTime = new TimeSpan(20, 30, 00),
                 FinishTime = new TimeSpan(21, 29, 59),
                 BaseValue = 496.66
@@ -72,7 +77,8 @@ namespace ItseAPI.Infraestructure
             await db.Tariff.AddAsync(new Tariff()
             {
                 ConcessionaryId = concessionary.Id,
-                Name = "WhiteTariffOffPeackII",
+                Name = "OffPeackII",
+                TariffType = "WhiteTariff",
                 InitTime = new TimeSpan(21, 30, 00),
                 FinishTime = new TimeSpan(23, 59, 59),
                 BaseValue = 353.25

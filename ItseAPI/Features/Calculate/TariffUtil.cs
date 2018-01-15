@@ -4,96 +4,63 @@ using System.Linq;
 using System.Threading.Tasks;
 using DateTimeExtensions;
 using DateTimeExtensions.TimeOfDay;
-using DateTimeExtensions.WorkingDays;
 using ItseAPI.Infraestructure;
 using ItseAPI.Domain;
 using Microsoft.EntityFrameworkCore;
-using static ItseAPI.Features.Calculate.Calculate;
 
 namespace ItseAPI.Features.Calculate
 {
     public class TariffUtil
     {
-        //Método que calcula o valor da tarifa por equipamento no novo sistema
-        public static async Task<double> WhiteTariffCalc(Db dataBaseContext, Command req)
+        public static async Task<TariffDetail> AllTariffCalc(Db dataBaseContext, Guid concessionaryId, double power, int quantity, List<DateInitAndFinish> useOfMonth)
         {
-            var offPeackITariffValue = (await dataBaseContext.Tariff.Where(t => t.Name.Contains("WhiteTariffOffPeackI")).FirstAsync()).BaseValue;
+            double equipConsume = 0;
+            double whiteTariffTotal = 0;
+            double conventionalTariffTotal = 0;
+            double totalMinutes = 0;
 
-            double total = 0;
+            var conventionalTariffValue = (await dataBaseContext.Tariff.Where(t => t.ConcessionaryId.Equals(concessionaryId) && t.TariffType.Contains("Conventional")).FirstAsync()).BaseValue;
 
-            foreach (var dateInterval in req.UseOfMonth)
+            foreach (var item in useOfMonth)
             {
-                var periodList = await DateConsistenceList(dataBaseContext, dateInterval.DateTimeInit, dateInterval.DateTimeFinish);
-                double equipConsume = 0;
-
-                foreach (var period in periodList)
+                while (item.DateInit <= item.DateFinish)
                 {
-                    equipConsume = req.Power * req.Quantity * (period.TotalMinutes / 60) / 1000;
-                    total += (equipConsume * (period.TariffValue / 1000));
+                    var initDateTime = item.DateInit.SetTime(item.TimeInit.Hours, item.TimeInit.Minutes, item.TimeInit.Seconds);
+                    var finishDateTime = item.DateInit.SetTime(item.TimeFinish.Hours, item.TimeFinish.Minutes, item.TimeFinish.Seconds);
+
+                    var periodList = await DateConsistenceList(dataBaseContext, initDateTime, finishDateTime, concessionaryId);
+
+                    foreach (var period in periodList)
+                    {
+                        equipConsume = power * quantity * (period.TotalMinutes / 60) / 1000;
+                        whiteTariffTotal += (equipConsume * (period.WhiteTariffValue / 1000));
+                        conventionalTariffTotal += (equipConsume * (conventionalTariffValue / 1000));
+                        totalMinutes += period.TotalMinutes;
+                    }
+
+                    item.DateInit = item.DateInit.AddDays(1);
                 }
             }
-            return Math.Abs(total);
+
+            return new TariffDetail()
+            {
+                ConventionalTariffValue = conventionalTariffTotal,
+                WhiteTariffValue = whiteTariffTotal,
+                TimeOfUse = TotalTime(totalMinutes)
+            };
         }
 
-        //Método que calcula o valor da tarifa por equipamento no novo sistema
-        public static async Task<double> WhiteTariffCalc(Db dataBaseContext, double power, int quantity, List<DateInitAndFinish> useOfMonth)
+        public class TariffDetail
         {
-            double total = 0;
-
-            foreach (var dateInterval in useOfMonth)
-            {
-                var periodList = await DateConsistenceList(dataBaseContext, dateInterval.DateTimeInit, dateInterval.DateTimeFinish);
-                double equipConsume = 0;
-
-                foreach (var period in periodList)
-                {
-                    equipConsume = power * quantity * (period.TotalMinutes / 60) / 1000;
-                    var t = (equipConsume * (period.TariffValue / 1000));
-                    total += (equipConsume * (period.TariffValue / 1000));
-                }
-            }
-            return Math.Abs(total);
-        }
-
-        //Método que calcula o valor da tarifa por equipamento no atual sistema
-        public static async Task<double> ConventionalTariffCalc(Db dataBaseContext, Command req)
-        {
-            var conventionalTariffValue = (await dataBaseContext.Tariff.Where(t => t.Name.Contains("Conventional")).FirstAsync()).BaseValue;
-
-            double equipConsume = 0;
-            double total = 0;
-            foreach (var dateInterval in req.UseOfMonth)
-            {
-                var diff = dateInterval.DateTimeFinish - dateInterval.DateTimeInit;
-
-                equipConsume = req.Power * req.Quantity * (diff.TotalMinutes / 60) / 1000;
-                total += (equipConsume * (conventionalTariffValue / 1000));
-            }
-
-            return Math.Abs(total);
-        }
-
-        public static async Task<double> ConventionalTariffCalc(Db dataBaseContext, double power, int quantity, List<DateInitAndFinish> useOfMonth)
-        {
-            var conventionalTariffValue = (await dataBaseContext.Tariff.Where(t => t.Name.Contains("Conventional")).FirstAsync()).BaseValue;
-
-            double equipConsume = 0;
-            double total = 0;
-            foreach (var dateInterval in useOfMonth)
-            {
-                var diff = dateInterval.DateTimeFinish - dateInterval.DateTimeInit;
-
-                equipConsume = power * quantity * (diff.TotalMinutes / 60) / 1000;
-                total += (equipConsume * (conventionalTariffValue / 1000));
-            }
-
-            return Math.Abs(total);
+            public double ConventionalTariffValue { get; set; }
+            public double WhiteTariffValue { get; set; }
+            public TimeSpan TimeOfUse { get; set; }
         }
 
         //Date Consistence Object Aux
         public class DateConsistence
         {
-            public double TariffValue { get; set; }
+            public double WhiteTariffValue { get; set; }
             public double TotalMinutes { get; set; }
         }
 
@@ -107,55 +74,35 @@ namespace ItseAPI.Features.Calculate
         }
 
         //Método que retorna uma lista com os períodos da tarifa branca entre duas datas
-        public static async Task<List<DateConsistence>> DateConsistenceList(Db dataBaseContext, DateTime dateInit, DateTime dateFinish)
+        public static async Task<List<DateConsistence>> DateConsistenceList(Db dataBaseContext, DateTime dateInit, DateTime dateFinish, Guid concessionaryId)
         {
             var dateConsistenceList = new List<DateConsistence>();
 
-            //Criar Lista de Datas
-            var periodDateList = new List<DateInitAndFinish>();
+            var whiteTariffs = await dataBaseContext.Tariff.Where(t => t.ConcessionaryId.Equals(concessionaryId) && t.TariffType.Contains("White")).ToListAsync();
 
             while (dateInit < dateFinish)
             {
-                var tariffs = await dataBaseContext.Tariff.Where(t => t.Name.Contains("WhiteTariff")).ToListAsync();
-
-                foreach (var tariff in tariffs)
+                foreach (var tariff in whiteTariffs)
                 {
-                    DateInitAndFinish date = new DateInitAndFinish();
+                    DateTimeInitAndFinish date = new DateTimeInitAndFinish();
                     date.DateTimeInit = dateInit;
 
                     if (VerifyPeriod(tariff, dateInit))
                     {
-                        //Se for o último período e as datas não estão no mesmo dia
-                        if (tariff.Name.Equals("WhiteTariffOffPeackII"))
+
+                        if (tariff.FinishTime > dateFinish.TimeOfDay)
                         {
-                            if (SameDay(dateInit, dateFinish))
-                            {
-                                date.DateTimeFinish = dateFinish;
-                            }
-                            else
-                            {
-                                var offPeack1 = tariffs.First();
-                                date.DateTimeFinish = dateInit.AddDays(1).SetTime(offPeack1.FinishTime.Hours, offPeack1.FinishTime.Minutes, offPeack1.FinishTime.Seconds);
-                            }
+                            date.DateTimeFinish = dateFinish;
                         }
                         else
                         {
-                            if (tariff.FinishTime > dateFinish.TimeOfDay)
-                            {
-                                date.DateTimeFinish = dateFinish;
-                            }
-                            else
-                            {
-                                date.DateTimeFinish = dateInit.SetTime(tariff.FinishTime.Hours, tariff.FinishTime.Minutes, tariff.FinishTime.Seconds);
-                            }
+                            date.DateTimeFinish = dateInit.SetTime(tariff.FinishTime.Hours, tariff.FinishTime.Minutes, tariff.FinishTime.Seconds);
                         }
-
-                        periodDateList.Add(date);
 
                         //Adiciona na lista consistente
                         dateConsistenceList.Add(new DateConsistence()
                         {
-                            TariffValue = tariff.BaseValue,
+                            WhiteTariffValue = tariff.BaseValue,
                             TotalMinutes = TotalMinutes(date.DateTimeInit, date.DateTimeFinish)
                         });
 
@@ -177,49 +124,9 @@ namespace ItseAPI.Features.Calculate
             return Math.Abs((data2 - data1).TotalMinutes);
         }
 
-        public static double TotalMinutes(List<DateConsistence> dateConsistenceList)
+        public static TimeSpan TotalTime(double minutes)
         {
-            double total = 0;
-
-            foreach (var consistence in dateConsistenceList)
-            {
-                total += consistence.TotalMinutes;
-            }
-            return total;
-        }
-
-        public static async Task<double> TotalMinutes(Db dataBaseContext, List<DateInitAndFinish> dateList)
-        {
-            List<DateConsistence> consistenceList = new List<DateConsistence>();
-            foreach (var dateInterval in dateList)
-            {
-                consistenceList.AddRange(await DateConsistenceList(dataBaseContext, dateInterval.DateTimeInit, dateInterval.DateTimeFinish));
-            }
-            double total = 0;
-            foreach (var consistence in consistenceList)
-            {
-                total += consistence.TotalMinutes;
-            }
-
-            return total;
-        }
-
-        public static TimeSpan TotalTime(List<DateInitAndFinish> dateList)
-        {
-            TimeSpan totalTime = new TimeSpan();
-
-            foreach (var dateInterval in dateList)
-            {
-                if (dateInterval.DateTimeFinish > dateInterval.DateTimeInit)
-                {
-                    totalTime += dateInterval.DateTimeFinish - dateInterval.DateTimeInit;
-                }
-                else
-                {
-                    totalTime += dateInterval.DateTimeInit - dateInterval.DateTimeFinish;
-                }
-            }
-            return totalTime;
+            return new DateTime().AddMinutes(minutes).TimeOfDay;
         }
     }
 }
