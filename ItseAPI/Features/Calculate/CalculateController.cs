@@ -22,15 +22,5 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 
             return result;
         }
-
-        [HttpPatch]
-        [Route("{id}")]
-        public async Task<UpdateCalc.Result> UpdateCalc([FromRoute] Guid id, [FromBody] UpdateCalc.Command value)
-        {
-            value.Id = id;
-            var result = await mediator.Send(value);
-
-            return result;
-        }
     }
 }
