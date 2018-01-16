@@ -10,10 +10,10 @@ namespace ConventionalAndWhiteTariffCalculator.Domain
         public TimeSpan InitTime { get; set; }
         public TimeSpan FinishTime { get; set; }
         public double BaseValue { get; set; }
-        public Guid ConcessionaryId { get; set; }
+        public Guid PowerDistribuitorId { get; set; }
 
         #region NavigationProps
-        public virtual Concessionary Concessionary { get; set; }
+        public virtual PowerDistribuitor PowerDistribuitor { get; set; }
         #endregion
     }
 }

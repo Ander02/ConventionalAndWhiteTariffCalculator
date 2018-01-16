@@ -3,11 +3,10 @@ using System.Collections.Generic;
 
 namespace ConventionalAndWhiteTariffCalculator.Domain
 {
-    public class Concessionary
+    public class PowerDistribuitor
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string City { get; set; }
 
         #region NavigationProps
         public virtual List<Tariff> Tariffs { get; set; }

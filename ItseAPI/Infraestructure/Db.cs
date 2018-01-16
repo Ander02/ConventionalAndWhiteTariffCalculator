@@ -8,7 +8,7 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
         #region Tables
         public DbSet<Equipament> Equipament { get; set; }
         public DbSet<Tariff> Tariff { get; set; }
-        public DbSet<Concessionary> Concessionary { get; set; }
+        public DbSet<PowerDistribuitor> PowerDistribuitor { get; set; }
         #endregion
 
         public Db(DbContextOptions options) : base(options)
@@ -20,9 +20,9 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
         {
             m.Entity<Equipament>().ToTable(nameof(Equipament));
             m.Entity<Tariff>().ToTable(nameof(Tariff));
-            m.Entity<Concessionary>().ToTable(nameof(Concessionary));
+            m.Entity<PowerDistribuitor>().ToTable(nameof(PowerDistribuitor));
 
-            m.Entity<Tariff>().HasOne(t => t.Concessionary).WithMany(c => c.Tariffs).HasForeignKey(t => t.ConcessionaryId).IsRequired(true).OnDelete(DeleteBehavior.Cascade);
+            m.Entity<Tariff>().HasOne(t => t.PowerDistribuitor).WithMany(c => c.Tariffs).HasForeignKey(t => t.PowerDistribuitorId).IsRequired(true).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
             double conventionalTariffTotal = 0;
             double totalMinutes = 0;
 
-            var conventionalTariffValue = (await dataBaseContext.Tariff.Where(t => t.ConcessionaryId.Equals(concessionaryId) && t.TariffType.Contains("Conventional")).FirstAsync()).BaseValue;
+            var conventionalTariffValue = (await dataBaseContext.Tariff.Where(t => t.PowerDistribuitorId.Equals(concessionaryId) && t.TariffType.Contains("Conventional")).FirstAsync()).BaseValue;
 
             foreach (var item in useOfMonth)
             {
@@ -65,7 +65,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
         }
 
         //Método que verifica se uma data está no período indicado
-        public static bool VerifyPeriod(Tariff whiteTariffType, DateTime date)
+        public static bool VerifyPeriod(Domain.Tariff whiteTariffType, DateTime date)
         {
             var initTime = new Time(whiteTariffType.InitTime.Hours, whiteTariffType.InitTime.Minutes, whiteTariffType.InitTime.Seconds);
             var finishTime = new Time(whiteTariffType.FinishTime.Hours, whiteTariffType.FinishTime.Minutes, whiteTariffType.FinishTime.Seconds);
@@ -78,7 +78,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
         {
             var dateConsistenceList = new List<DateConsistence>();
 
-            var whiteTariffs = await dataBaseContext.Tariff.Where(t => t.ConcessionaryId.Equals(concessionaryId) && t.TariffType.Contains("White")).ToListAsync();
+            var whiteTariffs = await dataBaseContext.Tariff.Where(t => t.PowerDistribuitorId.Equals(concessionaryId) && t.TariffType.Contains("White")).ToListAsync();
 
             while (dateInit < dateFinish)
             {

@@ -6,11 +6,11 @@ using MediatR;
 namespace ConventionalAndWhiteTariffCalculator.Features.Equipament
 {
     [Route("/[controller]")]
-    public class EquipamentController : Controller
+    public class EquipamentsController : Controller
     {
         private IMediator mediator;
 
-        public EquipamentController(IMediator mediator)
+        public EquipamentsController(IMediator mediator)
         {
             this.mediator = mediator;
         }

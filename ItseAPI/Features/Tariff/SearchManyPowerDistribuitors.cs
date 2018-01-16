@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Concessionary
+namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
 {
-    public class SearchManyConcessionarys
+    public class SearchManyPowerDistribuitors
     {
         public class Query : IRequest<List<Result>>
         {
@@ -19,7 +19,6 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Concessionary
         {
             public Guid Id { get; set; }
             public string Name { get; set; }
-            public string City { get; set; }
         }
 
         public class Handler : IAsyncRequestHandler<Query, List<Result>>
@@ -35,16 +34,15 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Concessionary
             {
                 if (query.Name == null) query.Name = "";
 
-                var q = db.Concessionary
-                    .Where(c => c.Name.Contains(query.Name))
-                    .OrderBy(c => c.Name)
+                var q = db.PowerDistribuitor
+                    .Where(p => p.Name.Contains(query.Name))
+                    .OrderBy(p => p.Name)
                     .AsQueryable();
 
-                return (await q.ToListAsync()).Select(c => new Result
+                return (await q.ToListAsync()).Select(d => new Result
                 {
-                    Id = c.Id,
-                    Name = c.Name,
-                    City = c.City
+                    Id = d.Id,
+                    Name = d.Name
                 }).ToList();
             }
         }

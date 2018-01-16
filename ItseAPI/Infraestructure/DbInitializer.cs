@@ -13,19 +13,18 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
             //Inicializa o Banco
             logger.LogInformation("Starting database");
 
-            await db.Concessionary.AddAsync(new Concessionary()
+            await db.PowerDistribuitor.AddAsync(new PowerDistribuitor()
             {
-                Name = "AES Eletropaulo",
-                City = "São Paulo"
+                Name = "AES Eletropaulo"
             });
 
             await db.SaveChangesAsync();
 
-            var concessionary = db.Concessionary.Where(c => c.Name.Contains("AES Eletropaulo")).FirstOrDefault();
+            var distribuitor = db.PowerDistribuitor.Where(c => c.Name.Contains("AES Eletropaulo")).FirstOrDefault();
 
             await db.Tariff.AddAsync(new Tariff()
             {
-                ConcessionaryId = concessionary.Id,
+                PowerDistribuitorId = distribuitor.Id,
                 Name = "ConventionalTariff",
                 TariffType = "Conventional",
                 InitTime = new TimeSpan(00, 00, 00),
@@ -35,7 +34,7 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
 
             await db.Tariff.AddAsync(new Tariff()
             {
-                ConcessionaryId = concessionary.Id,
+                PowerDistribuitorId = distribuitor.Id,
                 Name = "OffPeackI",
                 TariffType = "WhiteTariff",
                 InitTime = new TimeSpan(00, 00, 00),
@@ -45,7 +44,7 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
 
             await db.Tariff.AddAsync(new Tariff()
             {
-                ConcessionaryId = concessionary.Id,
+                PowerDistribuitorId = distribuitor.Id,
                 Name = "IntermediateI",
                 TariffType = "WhiteTariff",
                 InitTime = new TimeSpan(16, 30, 00),
@@ -55,7 +54,7 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
 
             await db.Tariff.AddAsync(new Tariff()
             {
-                ConcessionaryId = concessionary.Id,
+                PowerDistribuitorId = distribuitor.Id,
                 Name = "OnPeack",
                 TariffType = "WhiteTariff",
                 InitTime = new TimeSpan(17, 30, 00),
@@ -65,7 +64,7 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
 
             await db.Tariff.AddAsync(new Tariff()
             {
-                ConcessionaryId = concessionary.Id,
+                PowerDistribuitorId = distribuitor.Id,
                 Name = "IntermediateII",
                 TariffType = "WhiteTariff",
                 InitTime = new TimeSpan(20, 30, 00),
@@ -75,7 +74,7 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
 
             await db.Tariff.AddAsync(new Tariff()
             {
-                ConcessionaryId = concessionary.Id,
+                PowerDistribuitorId = distribuitor.Id,
                 Name = "OffPeackII",
                 TariffType = "WhiteTariff",
                 InitTime = new TimeSpan(21, 30, 00),
