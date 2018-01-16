@@ -1,13 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System.Threading;
 using ConventionalAndWhiteTariffCalculator.Domain;
 
 namespace ConventionalAndWhiteTariffCalculator.Infraestructure

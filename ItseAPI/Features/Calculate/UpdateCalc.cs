@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ConventionalAndWhiteTariffCalculator.Infraestructure;
 using FluentValidation;
@@ -12,7 +11,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
     {
         public class Command : IRequest<Result>
         {
-            public Guid EquipamentId { get; set; }
+            public Guid Id { get; set; }
             public Guid ConcessionaryId { get; set; }
             public string Name { get; set; }
             public double Power { get; set; }
@@ -48,7 +47,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 
         public class Result
         {
-            public Guid EquipamentId { get; set; }
+            public Guid Id { get; set; }
             public TimeSpan TimeOfUse { get; set; }
             public double WhiteTariffEnergySpending { get; set; }
             public double ConventionalTariffEnergySpending { get; set; }
@@ -69,7 +68,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 
                 return new Result()
                 {
-                    EquipamentId = req.EquipamentId,
+                    Id = req.Id,
                     TimeOfUse = tariffDetail.TimeOfUse,
                     ConventionalTariffEnergySpending = tariffDetail.ConventionalTariffValue,
                     WhiteTariffEnergySpending = tariffDetail.WhiteTariffValue

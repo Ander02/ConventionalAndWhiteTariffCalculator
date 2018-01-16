@@ -28,24 +28,28 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 
                 RuleFor(c => c.UseOfMonth).Custom((list, context) =>
                 {
-                    foreach (var item in list)
+                    if (list == null)
                     {
-                        if (item.DateInit > item.DateFinish)
-                        {
-                            context.AddFailure("Data de início deve ser antes da data de fim");
-                        }
-                        if (item.TimeInit > item.TimeFinish)
-                        {
-                            context.AddFailure("Hora de início deve ser antes da Hora de fim");
-                        }
+                        context.AddFailure("Lista com datas e horários deve ser inicializada");
                     }
+                    else foreach (var item in list)
+                        {
+                            if (item.DateInit > item.DateFinish)
+                            {
+                                context.AddFailure("Data de início deve ser antes da data de fim");
+                            }
+                            if (item.TimeInit > item.TimeFinish)
+                            {
+                                context.AddFailure("Hora de início deve ser antes da Hora de fim");
+                            }
+                        }
                 });
             }
         }
 
         public class Result
         {
-            public Guid EquipamentId { get; set; }
+            public Guid Id { get; set; }
             public TimeSpan TimeOfUse { get; set; }
             public double WhiteTariffEnergySpending { get; set; }
             public double ConventionalTariffEnergySpending { get; set; }
@@ -66,7 +70,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 
                 return new Result()
                 {
-                    EquipamentId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     ConventionalTariffEnergySpending = tariffDetail.ConventionalTariffValue,
                     WhiteTariffEnergySpending = tariffDetail.WhiteTariffValue,
                     TimeOfUse = tariffDetail.TimeOfUse

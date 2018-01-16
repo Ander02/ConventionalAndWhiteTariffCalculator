@@ -27,7 +27,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
         [Route("{id}")]
         public async Task<UpdateCalc.Result> UpdateCalc([FromRoute] Guid id, [FromBody] UpdateCalc.Command value)
         {
-            value.EquipamentId = id;
+            value.Id = id;
             var result = await mediator.Send(value);
 
             return result;

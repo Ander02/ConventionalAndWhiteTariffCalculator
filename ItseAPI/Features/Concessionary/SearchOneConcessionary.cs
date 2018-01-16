@@ -1,11 +1,6 @@
 ﻿using ConventionalAndWhiteTariffCalculator.Infraestructure;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ConventionalAndWhiteTariffCalculator.Features.Concessionary
@@ -19,6 +14,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Concessionary
 
         public class Result
         {
+            public Guid Id { get; set; }
             public string Name { get; set; }
             public string City { get; set; }
         }
@@ -38,6 +34,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Concessionary
 
                 return new Result()
                 {
+                    Id = c.Id,
                     Name = c.Name,
                     City = c.City
                 };

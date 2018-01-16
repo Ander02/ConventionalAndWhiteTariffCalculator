@@ -1,8 +1,6 @@
 ﻿using ConventionalAndWhiteTariffCalculator.Infraestructure;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +13,11 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Concessionary
         public class Query : IRequest<List<Result>>
         {
             public string Name { get; set; } = "";
-            public int Limit { get; set; } = 20;
         }
 
         public class Result
         {
+            public Guid Id { get; set; }
             public string Name { get; set; }
             public string City { get; set; }
         }
@@ -40,11 +38,11 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Concessionary
                 var q = db.Concessionary
                     .Where(c => c.Name.Contains(query.Name))
                     .OrderBy(c => c.Name)
-                    .Take(query.Limit)
                     .AsQueryable();
 
                 return (await q.ToListAsync()).Select(c => new Result
                 {
+                    Id = c.Id,
                     Name = c.Name,
                     City = c.City
                 }).ToList();
