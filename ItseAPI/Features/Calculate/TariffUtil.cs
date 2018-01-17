@@ -5,39 +5,64 @@ using System.Threading.Tasks;
 using DateTimeExtensions;
 using DateTimeExtensions.TimeOfDay;
 using ConventionalAndWhiteTariffCalculator.Infraestructure;
-using ConventionalAndWhiteTariffCalculator.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 {
     public class TariffUtil
     {
-        public static async Task<TariffDetail> AllTariffCalc(Db dataBaseContext, Guid concessionaryId, double power, int quantity, List<DateInitAndFinish> useOfMonth)
+        public class TariffDetail
+        {
+            public double ConventionalTariffValue { get; set; }
+            public double WhiteTariffValue { get; set; }
+            public TimeSpan TimeOfUse { get; set; }
+        }
+        public class DateConsistence
+        {
+            public double WhiteTariffValue { get; set; }
+            public double TotalMinutes { get; set; }
+        }
+
+        //Método que calcula o valor da tarifa convencional e branca
+        public static async Task<TariffDetail> AllTariffCalc(Db dataBaseContext, Guid powerDistribuitorId, double power, int quantity, List<DateInitAndFinish> useOfMonth)
         {
             double equipConsume = 0;
             double whiteTariffTotal = 0;
             double conventionalTariffTotal = 0;
             double totalMinutes = 0;
 
-            var conventionalTariffValue = (await dataBaseContext.Tariff.Where(t => t.PowerDistribuitorId.Equals(concessionaryId) && t.TariffType.Contains("Conventional")).FirstAsync()).BaseValue;
+            //Lista com todas as tarifas
+            var tariffsList = await dataBaseContext.Tariff.Where(t => t.PowerDistribuitorId.Equals(powerDistribuitorId)).ToListAsync();
 
+            //Lista com as tarifas brancas
+            var whiteTariffsList = tariffsList.Where(t => t.TariffType.Contains("WhiteTariff")).ToList();
+
+            //Valor da tarifa convencional nessa distribuidora
+            var conventionalTariffValue = tariffsList.Where(t => t.TariffType.Contains("Conventional")).FirstOrDefault().BaseValue;
+
+            //Para cada item do uso no mês
             foreach (var item in useOfMonth)
             {
+                //enquanto a data inicial for menor que a data final
                 while (item.DateInit <= item.DateFinish)
                 {
+                    //Define dia com data e hora
                     var initDateTime = item.DateInit.SetTime(item.TimeInit.Hours, item.TimeInit.Minutes, item.TimeInit.Seconds);
                     var finishDateTime = item.DateInit.SetTime(item.TimeFinish.Hours, item.TimeFinish.Minutes, item.TimeFinish.Seconds);
 
-                    var periodList = await DateConsistenceList(dataBaseContext, initDateTime, finishDateTime, concessionaryId);
+                    //Cria uma lista de períodos com faixas de horário
+                    var periodList = DateConsistenceList(whiteTariffsList, initDateTime, finishDateTime);
 
+                    //Para cada período
                     foreach (var period in periodList)
                     {
+                        //Realiza os cálculos
                         equipConsume = power * quantity * (period.TotalMinutes / 60) / 1000;
                         whiteTariffTotal += (equipConsume * (period.WhiteTariffValue / 1000));
                         conventionalTariffTotal += (equipConsume * (conventionalTariffValue / 1000));
                         totalMinutes += period.TotalMinutes;
                     }
-
+                    //Incrementa um dia
                     item.DateInit = item.DateInit.AddDays(1);
                 }
             }
@@ -50,77 +75,60 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
             };
         }
 
-        public class TariffDetail
-        {
-            public double ConventionalTariffValue { get; set; }
-            public double WhiteTariffValue { get; set; }
-            public TimeSpan TimeOfUse { get; set; }
-        }
-
-        //Date Consistence Object Aux
-        public class DateConsistence
-        {
-            public double WhiteTariffValue { get; set; }
-            public double TotalMinutes { get; set; }
-        }
-
         //Método que verifica se uma data está no período indicado
         public static bool VerifyPeriod(Domain.Tariff whiteTariffType, DateTime date)
         {
-            var initTime = new Time(whiteTariffType.InitTime.Hours, whiteTariffType.InitTime.Minutes, whiteTariffType.InitTime.Seconds);
-            var finishTime = new Time(whiteTariffType.FinishTime.Hours, whiteTariffType.FinishTime.Minutes, whiteTariffType.FinishTime.Seconds);
+            var tariffInitTime = new Time(whiteTariffType.InitTime.Hours, whiteTariffType.InitTime.Minutes, whiteTariffType.InitTime.Seconds);
+            var tariffFinishTime = new Time(whiteTariffType.FinishTime.Hours, whiteTariffType.FinishTime.Minutes, whiteTariffType.FinishTime.Seconds);
 
-            return date.IsBetween(initTime, finishTime);
+            //Verifica se essa data está entre os extremos do período da tarifa
+            return date.IsBetween(tariffInitTime, tariffFinishTime);
         }
 
         //Método que retorna uma lista com os períodos da tarifa branca entre duas datas
-        public static async Task<List<DateConsistence>> DateConsistenceList(Db dataBaseContext, DateTime dateInit, DateTime dateFinish, Guid concessionaryId)
+        public static List<DateConsistence> DateConsistenceList(List<Domain.Tariff> whiteTariffsList, DateTime dateInit, DateTime dateFinish)
         {
             var dateConsistenceList = new List<DateConsistence>();
 
-            var whiteTariffs = await dataBaseContext.Tariff.Where(t => t.PowerDistribuitorId.Equals(concessionaryId) && t.TariffType.Contains("White")).ToListAsync();
-
-            while (dateInit < dateFinish)
+            //Se não for um dia útil
+            if (dateInit.IsHoliday() || dateInit.DayOfWeek.Equals(DayOfWeek.Saturday) || dateInit.DayOfWeek.Equals(DayOfWeek.Sunday))
             {
-                if (dateInit.IsHoliday() || dateInit.DayOfWeek.Equals(DayOfWeek.Saturday) || dateInit.DayOfWeek.Equals(DayOfWeek.Sunday))
+                //Adiciona na lista consistente
+                dateConsistenceList.Add(new DateConsistence()
                 {
-                    //Adiciona na lista consistente
-                    dateConsistenceList.Add(new DateConsistence()
-                    {
-                        WhiteTariffValue = whiteTariffs.Where(t => t.Name.Contains("OffPeack")).First().BaseValue,
-                        TotalMinutes = TotalMinutes(dateInit, dateFinish)
-                    });
-
-                    dateInit = dateInit.AddDays(1).SetTime(0, 0, 0);
-                }
-                else
+                    //Nesse dia todas respeitam os valores da tarifa no horário fora de ponta
+                    WhiteTariffValue = whiteTariffsList.Where(t => t.Name.Contains("OffPeack")).First().BaseValue,
+                    TotalMinutes = TotalMinutes(dateInit, dateFinish)
+                });
+            }
+            else
+            {
+                //Para cada tarifa branca
+                foreach (var tariff in whiteTariffsList)
                 {
-                    foreach (var tariff in whiteTariffs)
+                    DateTimeInitAndFinish date = new DateTimeInitAndFinish
                     {
-                        DateTimeInitAndFinish date = new DateTimeInitAndFinish();
-                        date.DateTimeInit = dateInit;
+                        DateTimeInit = dateInit
+                    };
 
-                        if (VerifyPeriod(tariff, dateInit))
+                    //Se a tarifa estiver no mesmo período
+                    if (VerifyPeriod(tariff, dateInit))
+                    {
+                        //Se a hora final da tarifa for maior que a hora da data final
+                        if (tariff.FinishTime > dateFinish.TimeOfDay)
                         {
-
-                            if (tariff.FinishTime > dateFinish.TimeOfDay)
-                            {
-                                date.DateTimeFinish = dateFinish;
-                            }
-                            else
-                            {
-                                date.DateTimeFinish = dateInit.SetTime(tariff.FinishTime.Hours, tariff.FinishTime.Minutes, tariff.FinishTime.Seconds);
-                            }
-
-                            //Adiciona na lista consistente
-                            dateConsistenceList.Add(new DateConsistence()
-                            {
-                                WhiteTariffValue = tariff.BaseValue,
-                                TotalMinutes = TotalMinutes(date.DateTimeInit, date.DateTimeFinish)
-                            });
-
-                            dateInit = date.DateTimeFinish.AddSeconds(1);
+                            date.DateTimeFinish = dateFinish;
                         }
+                        else
+                        {
+                            date.DateTimeFinish = dateInit.SetTime(tariff.FinishTime.Hours, tariff.FinishTime.Minutes, tariff.FinishTime.Seconds);
+                        }
+                        //Adiciona na lista consistente
+                        dateConsistenceList.Add(new DateConsistence()
+                        {
+                            WhiteTariffValue = tariff.BaseValue,
+                            TotalMinutes = TotalMinutes(date.DateTimeInit, date.DateTimeFinish)
+                        });
                     }
                 }
             }
@@ -133,11 +141,13 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
             return (dateInit.DayOfYear == dateFinish.DayOfYear) && (dateInit.Year == dateFinish.Year);
         }
 
+        //Método que calcula do total de minutos entre duas datas
         public static double TotalMinutes(DateTime data1, DateTime data2)
         {
             return Math.Abs((data2 - data1).TotalMinutes);
         }
 
+        //Método que retorna o tempo total com base no número de minutos
         public static TimeSpan TotalTime(double minutes)
         {
             return new DateTime().AddMinutes(minutes).TimeOfDay;

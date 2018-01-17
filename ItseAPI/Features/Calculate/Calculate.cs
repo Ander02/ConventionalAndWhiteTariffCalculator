@@ -11,7 +11,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
     {
         public class Command : IRequest<Result>
         {
-            public Guid ConcessionaryId { get; set; }
+            public Guid PowerDistribuitorId { get; set; }
             public string Name { get; set; }
             public double Power { get; set; }
             public int Quantity { get; set; }
@@ -22,16 +22,14 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
         {
             public CommandValidator()
             {
-                RuleFor(c => c.ConcessionaryId).NotEmpty().NotNull();
+                RuleFor(c => c.PowerDistribuitorId).NotEmpty().NotNull();
                 RuleFor(c => c.Power).NotEmpty().NotNull().GreaterThanOrEqualTo(0);
                 RuleFor(c => c.Quantity).NotEmpty().NotNull().GreaterThanOrEqualTo(0);
 
                 RuleFor(c => c.UseOfMonth).Custom((list, context) =>
                 {
-                    if (list == null)
-                    {
-                        context.AddFailure("Lista com datas e horários deve ser inicializada");
-                    }
+                    if (list == null) context.AddFailure("Lista com datas e horários não pode ser nula");
+
                     else foreach (var item in list)
                         {
                             if (item.DateInit > item.DateFinish)
@@ -49,7 +47,6 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 
         public class Result
         {
-            public Guid Id { get; set; }
             public TimeSpan TimeOfUse { get; set; }
             public double WhiteTariffEnergySpending { get; set; }
             public double ConventionalTariffEnergySpending { get; set; }
@@ -66,11 +63,10 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 
             public async Task<Result> Handle(Command req)
             {
-                var tariffDetail = await TariffUtil.AllTariffCalc(db, req.ConcessionaryId, req.Power, req.Quantity, req.UseOfMonth);
+                var tariffDetail = await TariffUtil.AllTariffCalc(db, req.PowerDistribuitorId, req.Power, req.Quantity, req.UseOfMonth);
 
                 return new Result()
                 {
-                    Id = Guid.NewGuid(),
                     ConventionalTariffEnergySpending = tariffDetail.ConventionalTariffValue,
                     WhiteTariffEnergySpending = tariffDetail.WhiteTariffValue,
                     TimeOfUse = tariffDetail.TimeOfUse

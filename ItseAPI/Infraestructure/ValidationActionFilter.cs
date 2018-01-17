@@ -19,7 +19,7 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
                 var result = new ContentResult();
                 string content = JsonConvert.SerializeObject(context.ModelState.Select(m => new
                 {
-                    Error = m.Value.Errors.Select(e => e.ErrorMessage).FirstOrDefault()
+                    Error = m.Value.Errors.Select(e => e.Exception != null ? e.Exception.Message : e.ErrorMessage).FirstOrDefault()
                 }),
                 new JsonSerializerSettings
                 {
