@@ -11,9 +11,10 @@ using System;
 namespace ConventionalAndWhiteTariffCalculator.Migrations
 {
     [DbContext(typeof(Db))]
-    partial class DbModelSnapshot : ModelSnapshot
+    [Migration("20180117154905_EquipmentRename")]
+    partial class EquipmentRename
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,7 +32,7 @@ namespace ConventionalAndWhiteTariffCalculator.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Equipment");
+                    b.ToTable("Equipament");
                 });
 
             modelBuilder.Entity("ConventionalAndWhiteTariffCalculator.Domain.PowerDistribuitor", b =>

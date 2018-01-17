@@ -6,7 +6,7 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
     public class Db : DbContext
     {
         #region Tables
-        public DbSet<Equipament> Equipament { get; set; }
+        public DbSet<Equipment> Equipament { get; set; }
         public DbSet<Tariff> Tariff { get; set; }
         public DbSet<PowerDistribuitor> PowerDistribuitor { get; set; }
         #endregion
@@ -18,7 +18,7 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
 
         protected override void OnModelCreating(ModelBuilder m)
         {
-            m.Entity<Equipament>().ToTable(nameof(Equipament));
+            m.Entity<Equipment>().ToTable(nameof(Equipment));
             m.Entity<Tariff>().ToTable(nameof(Tariff));
             m.Entity<PowerDistribuitor>().ToTable(nameof(PowerDistribuitor));
 

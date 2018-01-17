@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Equipament
+namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
 {
     [Route("/[controller]")]
-    public class EquipamentsController : Controller
+    public class EquipmentsController : Controller
     {
         private IMediator mediator;
 
-        public EquipamentsController(IMediator mediator)
+        public EquipmentsController(IMediator mediator)
         {
             this.mediator = mediator;
         }
 
         [HttpPost]
-        public async Task<ActionResult> RegisterEquipament([FromBody] RegisterEquipament.Command value)
+        public async Task<ActionResult> RegisterEquipament([FromBody] RegisterEquipment.Command value)
         {
             var result = await mediator.Send(value);
 
@@ -24,7 +24,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipament
         }
 
         [HttpGet]
-        public async Task<List<SearchManyEquipaments.Result>> SearchManyEquipaments([FromQuery] SearchManyEquipaments.Query query)
+        public async Task<List<SearchManyEquipments.Result>> SearchManyEquipaments([FromQuery] SearchManyEquipments.Query query)
         {
             var result = await mediator.Send(query);
 
@@ -33,7 +33,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipament
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<SearchOneEquipament.Result> SearchOneEquipament([FromRoute] SearchOneEquipament.Query query)
+        public async Task<SearchOneEquipment.Result> SearchOneEquipament([FromRoute] SearchOneEquipment.Query query)
         {
             var result = await mediator.Send(query);
 

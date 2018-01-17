@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Equipament
+namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
 {
-    public class SearchManyEquipaments
+    public class SearchManyEquipments
     {
         public class Query : IRequest<List<Result>>
         {

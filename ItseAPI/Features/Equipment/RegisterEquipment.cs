@@ -4,9 +4,9 @@ using System;
 using System.Threading.Tasks;
 using ConventionalAndWhiteTariffCalculator.Infraestructure;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Equipament
+namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
 {
-    public class RegisterEquipament
+    public class RegisterEquipment
     {
         public class Command : IRequest<Result>
         {
@@ -41,20 +41,20 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipament
 
             public async Task<Result> Handle(Command command)
             {
-                var Equipament = new Domain.Equipament()
+                var equipment = new Domain.Equipment()
                 {
                     Name = command.Name,
                     DefaultPower = command.DefaultPower
                 };
 
-                await db.Equipament.AddAsync(Equipament);
+                await db.Equipament.AddAsync(equipment);
                 await db.SaveChangesAsync();
 
                 return new Result()
                 {
-                    Id = Equipament.Id,
-                    Name = Equipament.Name,
-                    DefaultPower = Equipament.DefaultPower
+                    Id = equipment.Id,
+                    Name = equipment.Name,
+                    DefaultPower = equipment.DefaultPower
                 };
             }
         }

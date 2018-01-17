@@ -3,9 +3,9 @@ using MediatR;
 using System;
 using System.Threading.Tasks;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Equipament
+namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
 {
-    public class SearchOneEquipament
+    public class SearchOneEquipment
     {
         public class Query : IRequest<Result>
         {
