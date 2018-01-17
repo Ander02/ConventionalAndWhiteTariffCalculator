@@ -17,7 +17,7 @@ namespace ConventionalAndWhiteTariffCalculator.Infraestructure
             if (!context.ModelState.IsValid)
             {
                 var result = new ContentResult();
-                string content = JsonConvert.SerializeObject(context.ModelState.Select(m => new
+                string content = JsonConvert.SerializeObject(context.ModelState.Select(m => new ExceptionResult()
                 {
                     Error = m.Value.Errors.Select(e => e.Exception != null ? e.Exception.Message : e.ErrorMessage).FirstOrDefault()
                 }),

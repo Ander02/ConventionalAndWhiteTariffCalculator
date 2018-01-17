@@ -6,6 +6,7 @@ using DateTimeExtensions;
 using DateTimeExtensions.TimeOfDay;
 using ConventionalAndWhiteTariffCalculator.Infraestructure;
 using Microsoft.EntityFrameworkCore;
+using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 
 namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 {
@@ -34,11 +35,14 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
             //Lista com todas as tarifas
             var tariffsList = await dataBaseContext.Tariff.Where(t => t.PowerDistribuitorId.Equals(powerDistribuitorId)).ToListAsync();
 
+            //Se a lista estiver vazia, lança uma NotFoundException
+            if (!tariffsList.Any()) throw new NotFoundException("Não foi encontrada nenhuma tarifa relacionada a esse distribuidor de energia");
+
             //Lista com as tarifas brancas
             var whiteTariffsList = tariffsList.Where(t => t.TariffType.Contains("WhiteTariff")).ToList();
 
             //Valor da tarifa convencional nessa distribuidora
-            var conventionalTariffValue = tariffsList.Where(t => t.TariffType.Contains("Conventional")).FirstOrDefault().BaseValue;
+            var conventionalTariffValue = tariffsList.Where(t => t.TariffType.Contains("Conventional")).First().BaseValue;
 
             //Para cada item do uso no mês
             foreach (var item in useOfMonth)

@@ -6,6 +6,7 @@ using ConventionalAndWhiteTariffCalculator.Infraestructure;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using FluentValidation.AspNetCore;
+using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 
 namespace ConventionalAndWhiteTariffCalculator
 {
@@ -40,7 +41,6 @@ namespace ConventionalAndWhiteTariffCalculator
 
             services.AddCors();
             services.AddMediatR(typeof(Startup));
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,7 +51,10 @@ namespace ConventionalAndWhiteTariffCalculator
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMiddleware<HttpExceptionHandlerMiddleware>();
+
             app.UseMvc();
+
         }
     }
 }
