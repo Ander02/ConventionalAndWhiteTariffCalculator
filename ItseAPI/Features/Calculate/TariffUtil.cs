@@ -75,7 +75,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
             {
                 ConventionalTariffValue = conventionalTariffTotal,
                 WhiteTariffValue = whiteTariffTotal,
-                TimeOfUse = TotalTime(totalMinutes)
+                TimeOfUse = TotalTime(quantity * totalMinutes)
             };
         }
 

@@ -1,6 +1,8 @@
 ﻿using ConventionalAndWhiteTariffCalculator.Infraestructure;
+using ConventionalAndWhiteTariffCalculatorAPI.Util;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,7 +37,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
                 if (query.Name == null) query.Name = "";
 
                 var q = db.Equipament
-                    .Where(p => p.Name.Contains(query.Name))
+                    .Where(p => p.Name.RemoveAcentuation().ToLower().Contains(query.Name.RemoveAcentuation().ToLower()))
                     .OrderBy(p => p.Name)
                     .Take(query.Limit)
                     .AsQueryable();
