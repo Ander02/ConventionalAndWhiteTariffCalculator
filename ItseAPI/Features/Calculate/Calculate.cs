@@ -12,7 +12,6 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
         public class Command : IRequest<Result>
         {
             public Guid PowerDistribuitorId { get; set; }
-            public string Name { get; set; }
             public double Power { get; set; }
             public int Quantity { get; set; }
             public List<DateInitAndFinish> UseOfMonth { get; set; }
@@ -32,14 +31,13 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 
                     else foreach (var item in list)
                         {
-                            if (item.DateInit > item.DateFinish)
-                            {
-                                context.AddFailure("Data de início deve ser antes da data de fim");
-                            }
-                            if (item.TimeInit > item.TimeFinish)
-                            {
-                                context.AddFailure("Hora de início deve ser antes da Hora de fim");
-                            }
+                            if (item.TimeInit < new TimeSpan(0,0,0)) context.AddFailure("Hora de início deve ser positiva");
+
+                            if (item.TimeFinish < new TimeSpan(0, 0, 0)) context.AddFailure("Hora de fim deve ser positiva");
+
+                            if (item.DateInit > item.DateFinish) context.AddFailure("Data de início deve ser antes da data de fim");
+
+                            if (item.TimeInit > item.TimeFinish) context.AddFailure("Hora de início deve ser antes da Hora de fim");
                         }
                 });
             }
@@ -47,7 +45,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 
         public class Result
         {
-            public TimeSpan TimeOfUse { get; set; }
+            public string TimeOfUse { get; set; }
             public double WhiteTariffEnergySpending { get; set; }
             public double ConventionalTariffEnergySpending { get; set; }
         }

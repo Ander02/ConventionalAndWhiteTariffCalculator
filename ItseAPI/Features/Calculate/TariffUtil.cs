@@ -16,7 +16,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
         {
             public double ConventionalTariffValue { get; set; }
             public double WhiteTariffValue { get; set; }
-            public TimeSpan TimeOfUse { get; set; }
+            public string TimeOfUse { get; set; }
         }
         public class DateConsistence
         {
@@ -71,12 +71,27 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
                 }
             }
 
-            return new TariffDetail()
+            var useTime = TotalTime(quantity * totalMinutes);
+
+            if (useTime.Days > 0)
             {
-                ConventionalTariffValue = conventionalTariffTotal,
-                WhiteTariffValue = whiteTariffTotal,
-                TimeOfUse = TotalTime(quantity * totalMinutes)
-            };
+                var separatedTime = useTime.ToString().Split(".");
+                return new TariffDetail()
+                {
+                    ConventionalTariffValue = conventionalTariffTotal,
+                    WhiteTariffValue = whiteTariffTotal,
+                    TimeOfUse = separatedTime[0] + " dias, " + separatedTime[1]
+                };
+            }
+            else
+            {
+                return new TariffDetail()
+                {
+                    ConventionalTariffValue = conventionalTariffTotal,
+                    WhiteTariffValue = whiteTariffTotal,
+                    TimeOfUse = useTime.ToString()
+                };
+            }
         }
 
         //Método que verifica se uma data está no período indicado
@@ -154,7 +169,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
         //Método que retorna o tempo total com base no número de minutos
         public static TimeSpan TotalTime(double minutes)
         {
-            return new DateTime().AddMinutes(minutes).TimeOfDay;
+            return TimeSpan.FromMinutes(minutes);
         }
     }
 }
