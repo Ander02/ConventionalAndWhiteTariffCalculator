@@ -55,7 +55,6 @@ namespace ConventionalAndWhiteTariffCalculator
 
             app.UseMiddleware<HttpExceptionHandlerMiddleware>();
             app.UseMvc();
-
         }
     }
 }
