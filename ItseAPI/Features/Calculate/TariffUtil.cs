@@ -71,27 +71,39 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
                 }
             }
 
+            //Detalhes da tarifa
+            var tariffDetail = new TariffDetail()
+            {
+                ConventionalTariffValue = conventionalTariffTotal,
+                WhiteTariffValue = whiteTariffTotal
+            };
+
+            //Tempo de uso total
             var useTime = TotalTime(quantity * totalMinutes);
 
+            //Formata string do tempo de uso
             if (useTime.Days > 0)
             {
                 var separatedTime = useTime.ToString().Split(".");
-                return new TariffDetail()
+                if (useTime.Days == 1)
                 {
-                    ConventionalTariffValue = conventionalTariffTotal,
-                    WhiteTariffValue = whiteTariffTotal,
-                    TimeOfUse = separatedTime[0] + " dias, " + separatedTime[1]
-                };
+                    if (useTime.Hours == 0 && useTime.Minutes == 0 && useTime.Seconds == 0) tariffDetail.TimeOfUse = separatedTime[0] + " dia";
+
+                    else tariffDetail.TimeOfUse = separatedTime[0] + " dia, " + separatedTime[1];
+                }
+                else
+                {
+                    if (useTime.Hours == 0 && useTime.Minutes == 0 && useTime.Seconds == 0) tariffDetail.TimeOfUse = separatedTime[0] + " dias";
+
+                    else tariffDetail.TimeOfUse = separatedTime[0] + " dias, " + separatedTime[1];
+                }
             }
             else
             {
-                return new TariffDetail()
-                {
-                    ConventionalTariffValue = conventionalTariffTotal,
-                    WhiteTariffValue = whiteTariffTotal,
-                    TimeOfUse = useTime.ToString()
-                };
+                tariffDetail.TimeOfUse = useTime.ToString();
             }
+            //retorna detalhes dos gastos na tarifa
+            return tariffDetail;
         }
 
         //Método que verifica se uma data está no período indicado
@@ -109,45 +121,50 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
         {
             var dateConsistenceList = new List<DateConsistence>();
 
-            //Se não for um dia útil
-            if (dateInit.IsHoliday() || dateInit.DayOfWeek.Equals(DayOfWeek.Saturday) || dateInit.DayOfWeek.Equals(DayOfWeek.Sunday))
+            while (dateInit < dateFinish)
             {
-                //Adiciona na lista consistente
-                dateConsistenceList.Add(new DateConsistence()
+                //Se não for um dia útil
+                if (dateInit.IsHoliday() || dateInit.DayOfWeek.Equals(DayOfWeek.Saturday) || dateInit.DayOfWeek.Equals(DayOfWeek.Sunday))
                 {
-                    //Nesse dia todas respeitam os valores da tarifa no horário fora de ponta
-                    WhiteTariffValue = whiteTariffsList.Where(t => t.Name.Contains("OffPeack")).First().BaseValue,
-                    TotalMinutes = TotalMinutes(dateInit, dateFinish)
-                });
-            }
-            else
-            {
-                //Para cada tarifa branca
-                foreach (var tariff in whiteTariffsList)
-                {
-                    DateTimeInitAndFinish date = new DateTimeInitAndFinish
+                    //Adiciona na lista consistente
+                    dateConsistenceList.Add(new DateConsistence()
                     {
-                        DateTimeInit = dateInit
-                    };
+                        //Nesse dia todas respeitam os valores da tarifa no horário fora de ponta
+                        WhiteTariffValue = whiteTariffsList.Where(t => t.Name.Contains("OffPeack")).First().BaseValue,
+                        TotalMinutes = TotalMinutes(dateInit, dateFinish)
+                    });
+                    dateInit = dateInit.AddDays(1).SetTime(0, 0, 0);
+                }
+                else
+                {
+                    //Para cada tarifa branca
+                    foreach (var tariff in whiteTariffsList)
+                    {
+                        DateTimeInitAndFinish date = new DateTimeInitAndFinish
+                        {
+                            DateTimeInit = dateInit
+                        };
 
-                    //Se a tarifa estiver no mesmo período
-                    if (VerifyPeriod(tariff, dateInit))
-                    {
-                        //Se a hora final da tarifa for maior que a hora da data final
-                        if (tariff.FinishTime > dateFinish.TimeOfDay)
+                        //Se a tarifa estiver no mesmo período
+                        if (VerifyPeriod(tariff, dateInit))
                         {
-                            date.DateTimeFinish = dateFinish;
+                            //Se a hora final da tarifa for maior que a hora da data final
+                            if (tariff.FinishTime > dateFinish.TimeOfDay)
+                            {
+                                date.DateTimeFinish = dateFinish;
+                            }
+                            else
+                            {
+                                date.DateTimeFinish = dateInit.SetTime(tariff.FinishTime.Hours, tariff.FinishTime.Minutes, tariff.FinishTime.Seconds).AddSeconds(1);
+                            }
+                            //Adiciona na lista consistente
+                            dateConsistenceList.Add(new DateConsistence()
+                            {
+                                WhiteTariffValue = tariff.BaseValue,
+                                TotalMinutes = TotalMinutes(date.DateTimeInit, date.DateTimeFinish)
+                            });
+                            dateInit = date.DateTimeFinish;
                         }
-                        else
-                        {
-                            date.DateTimeFinish = dateInit.SetTime(tariff.FinishTime.Hours, tariff.FinishTime.Minutes, tariff.FinishTime.Seconds);
-                        }
-                        //Adiciona na lista consistente
-                        dateConsistenceList.Add(new DateConsistence()
-                        {
-                            WhiteTariffValue = tariff.BaseValue,
-                            TotalMinutes = TotalMinutes(date.DateTimeInit, date.DateTimeFinish)
-                        });
                     }
                 }
             }
