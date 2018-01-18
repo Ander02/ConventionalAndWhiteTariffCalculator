@@ -31,9 +31,13 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
 
                     else foreach (var item in list)
                         {
-                            if (item.TimeInit < new TimeSpan(0,0,0)) context.AddFailure("Hora de início deve ser positiva");
+                            if (item.TimeInit < new TimeSpan(0, 0, 0)) context.AddFailure("Hora de início deve ser positiva");
 
                             if (item.TimeFinish < new TimeSpan(0, 0, 0)) context.AddFailure("Hora de fim deve ser positiva");
+
+                            if (item.TimeInit > new TimeSpan(23, 59, 59)) context.AddFailure("Hora de início inválida");
+
+                            if (item.TimeFinish > new TimeSpan(23, 59, 59)) context.AddFailure("Hora de fim inválida");
 
                             if (item.DateInit > item.DateFinish) context.AddFailure("Data de início deve ser antes da data de fim");
 

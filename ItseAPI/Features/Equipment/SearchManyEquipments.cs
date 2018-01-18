@@ -1,5 +1,6 @@
 ﻿using ConventionalAndWhiteTariffCalculator.Infraestructure;
 using ConventionalAndWhiteTariffCalculatorAPI.Util;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,6 +18,14 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
             public int Limit { get; set; } = 20;
         }
 
+        public class QueryValidator : AbstractValidator<Query>
+        {
+            public QueryValidator()
+            {
+                RuleFor(q => q.Limit).NotNull().GreaterThanOrEqualTo(0);
+            }
+        }
+        
         public class Result
         {
             public string Name { get; set; }
