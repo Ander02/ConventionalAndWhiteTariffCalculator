@@ -51,8 +51,8 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
                 while (item.DateInit <= item.DateFinish)
                 {
                     //Define dia com data e hora
-                    var initDateTime = item.DateInit.SetTime(item.TimeInit.Hours, item.TimeInit.Minutes, item.TimeInit.Seconds);
-                    var finishDateTime = item.DateInit.SetTime(item.TimeFinish.Hours, item.TimeFinish.Minutes, item.TimeFinish.Seconds);
+                    var initDateTime = item.DateInit.Value.SetTime(item.TimeInit.Value.Hours, item.TimeInit.Value.Minutes, item.TimeInit.Value.Seconds);
+                    var finishDateTime = item.DateInit.Value.SetTime(item.TimeFinish.Value.Hours, item.TimeFinish.Value.Minutes, item.TimeFinish.Value.Seconds);
 
                     //Cria uma lista de períodos com faixas de horário
                     var periodList = DateConsistenceList(whiteTariffsList, initDateTime, finishDateTime);
@@ -67,7 +67,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
                         totalMinutes += period.TotalMinutes;
                     }
                     //Incrementa um dia
-                    item.DateInit = item.DateInit.AddDays(1);
+                    item.DateInit = item.DateInit.Value.AddDays(1);
                 }
             }
 
