@@ -25,7 +25,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
                 RuleFor(q => q.Limit).NotNull().GreaterThanOrEqualTo(0);
             }
         }
-        
+
         public class Result
         {
             public string Name { get; set; }
@@ -45,13 +45,14 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
             {
                 if (query.Name == null) query.Name = "";
 
-                var q = db.Equipament
-                    .Where(p => p.Name.RemoveAcentuation().ToLower().Contains(query.Name.RemoveAcentuation().ToLower()))
+                var equips = await db.Equipament
                     .OrderBy(p => p.Name)
                     .Take(query.Limit)
-                    .AsQueryable();
+                    .ToListAsync();
 
-                return (await q.ToListAsync()).Select(p => new Result
+                var result = equips.Where(p => p.Name.RemoveAcentuation().ToLower().Contains(query.Name.RemoveAcentuation().ToLower())).ToList();
+
+                return result.Select(p => new Result
                 {
                     Name = p.Name,
                     DefaultPower = p.DefaultPower
