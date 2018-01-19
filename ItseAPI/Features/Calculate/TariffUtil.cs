@@ -75,34 +75,19 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
             var tariffDetail = new TariffDetail()
             {
                 ConventionalTariffValue = conventionalTariffTotal,
-                WhiteTariffValue = whiteTariffTotal
+                WhiteTariffValue = whiteTariffTotal,
             };
 
             //Tempo de uso total
             var useTime = TotalTime(quantity * totalMinutes);
 
-            //Formata string do tempo de uso
-            if (useTime.Days > 0)
-            {
-                var separatedTime = useTime.ToString().Split(".");
-                if (useTime.Days == 1)
-                {
-                    if (useTime.Hours == 0 && useTime.Minutes == 0 && useTime.Seconds == 0) tariffDetail.TimeOfUse = separatedTime[0] + " dia";
+            //Formata tempo de uso
+            if (useTime.TotalHours < 1) tariffDetail.TimeOfUse = useTime.Minutes + "min";
 
-                    else tariffDetail.TimeOfUse = separatedTime[0] + " dia, " + separatedTime[1];
-                }
-                else
-                {
-                    if (useTime.Hours == 0 && useTime.Minutes == 0 && useTime.Seconds == 0) tariffDetail.TimeOfUse = separatedTime[0] + " dias";
+            else if (useTime.Minutes == 0) tariffDetail.TimeOfUse = useTime.Days * 24 + useTime.Hours + "h";
 
-                    else tariffDetail.TimeOfUse = separatedTime[0] + " dias, " + separatedTime[1];
-                }
-            }
-            else
-            {
-                tariffDetail.TimeOfUse = useTime.ToString();
-            }
-            //retorna detalhes dos gastos na tarifa
+            else tariffDetail.TimeOfUse = useTime.Days * 24 + useTime.Hours + "h" + useTime.Minutes + "min";
+            
             return tariffDetail;
         }
 
