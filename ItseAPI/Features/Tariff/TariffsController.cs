@@ -15,13 +15,15 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
             this.mediator = mediator;
         }
 
-        [HttpPost]
-        public async Task<ActionResult> RegisterTariff([FromBody] RegisteTariff.Command value)
-        {
-            var result = await mediator.Send(value);
+        /*
+            [HttpPost]
+            public async Task<ActionResult> RegisterTariff([FromBody] RegisterTariff.Command value)
+            {
+                var result = await mediator.Send(value);
 
-            return Created(this.Request.Path.Value + "/" + result.PowerDistribuitor.Id, result);
-        }
+                return Created(this.Request.Path.Value + "/" + result.PowerDistribuitor.Id, result);
+            }
+        */
 
         [HttpGet]
         [Route("/powerdistribuitors")]
@@ -32,21 +34,25 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
             return result;
         }
 
-        [HttpGet]
-        public async Task<List<SearchManyTariffs.Result>> SearchManyTariffs([FromQuery] SearchManyTariffs.Query query)
-        {
-            var result = await mediator.Send(query);
+        /*
+            [HttpGet]
+            public async Task<List<SearchManyTariffs.Result>> SearchManyTariffs([FromQuery] SearchManyTariffs.Query query)
+            {
+                var result = await mediator.Send(query);
 
-            return result;
-        }
+                return result;
+            }
+        */
 
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<SearchOneTariff.Result> SearchTariffsForPowerDistribuitor([FromRoute] SearchOneTariff.Query query)
-        {
-            var result = await mediator.Send(query);
+        /*
+            [HttpGet]
+            [Route("{id}")]
+            public async Task<SearchOneTariff.Result> SearchTariffsForPowerDistribuitor([FromRoute] SearchOneTariff.Query query)
+            {
+                var result = await mediator.Send(query);
 
-            return result;
-        }
+                return result;
+            }
+        */
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
 {
@@ -15,13 +16,15 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
             this.mediator = mediator;
         }
 
-        [HttpPost]
-        public async Task<ActionResult> RegisterEquipament([FromBody] RegisterEquipment.Command value)
-        {
-            var result = await mediator.Send(value);
+        /*
+            [HttpPost]
+            public async Task<ActionResult> RegisterEquipament([FromBody] RegisterEquipment.Command value)
+            {
+                var result = await mediator.Send(value);
 
-            return Created(this.Request.Path.Value + "/" + result.Id, result);
-        }
+                return Created(this.Request.Path.Value + "/" + result.Id, result);
+            }
+        */
 
         [HttpGet]
         public async Task<List<SearchManyEquipments.Result>> SearchManyEquipaments([FromQuery] SearchManyEquipments.Query query)

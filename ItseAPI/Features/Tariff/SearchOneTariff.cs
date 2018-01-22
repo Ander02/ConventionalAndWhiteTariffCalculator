@@ -1,4 +1,6 @@
 ﻿using ConventionalAndWhiteTariffCalculator.Infraestructure;
+using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,6 +15,14 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
         public class Query : IRequest<Result>
         {
             public Guid Id { get; set; }
+        }
+
+        public class QueryValidator : AbstractValidator<Query>
+        {
+            public QueryValidator()
+            {
+                RuleFor(q => q.Id).NotNull().NotEmpty();
+            }
         }
 
         public class Result
@@ -32,7 +42,9 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
 
             public async Task<Result> Handle(Query query)
             {
-                var powerDistribuitor = await db.PowerDistribuitor.Include(p => p.Tariffs).FirstOrDefaultAsync();
+                var powerDistribuitor = await db.PowerDistribuitor.Where(p => p.Id.Equals(query.Id)).Include(p => p.Tariffs).FirstOrDefaultAsync();
+
+                if (powerDistribuitor == null) throw new NotFoundException("Distribuidora de energia não encontrada");
 
                 return new Result()
                 {

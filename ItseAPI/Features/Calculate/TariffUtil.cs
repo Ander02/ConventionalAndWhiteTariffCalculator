@@ -39,7 +39,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
             if (!tariffsList.Any()) throw new NotFoundException("Não foi encontrada nenhuma tarifa relacionada a esse distribuidor de energia");
 
             //Lista com as tarifas brancas
-            var whiteTariffsList = tariffsList.Where(t => t.TariffType.Contains("WhiteTariff")).ToList();
+            var whiteTariffsList = tariffsList.Where(t => t.TariffType.Contains("White")).ToList();
 
             //Valor da tarifa convencional nessa distribuidora
             var conventionalTariffValue = tariffsList.Where(t => t.TariffType.Contains("Conventional")).First().BaseValue;
@@ -62,8 +62,8 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
                     {
                         //Realiza os cálculos
                         equipConsume = power * quantity * (period.TotalMinutes / 60) / 1000;
-                        whiteTariffTotal += (equipConsume * (period.WhiteTariffValue / 1000));
-                        conventionalTariffTotal += (equipConsume * (conventionalTariffValue / 1000));
+                        whiteTariffTotal += (equipConsume * (period.WhiteTariffValue));
+                        conventionalTariffTotal += (equipConsume * (conventionalTariffValue));
                         totalMinutes += period.TotalMinutes;
                     }
                     //Incrementa um dia

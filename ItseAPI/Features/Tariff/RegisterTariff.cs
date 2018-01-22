@@ -6,7 +6,7 @@ using ConventionalAndWhiteTariffCalculator.Infraestructure;
 
 namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
 {
-    public partial class RegisteTariff
+    public partial class RegisterTariff
     {
         public class Command : IRequest<Result>
         {

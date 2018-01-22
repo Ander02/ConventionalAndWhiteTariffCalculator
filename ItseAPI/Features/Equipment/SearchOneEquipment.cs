@@ -1,4 +1,5 @@
 ﻿using ConventionalAndWhiteTariffCalculator.Infraestructure;
+using FluentValidation;
 using MediatR;
 using System;
 using System.Threading.Tasks;
@@ -10,6 +11,14 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
         public class Query : IRequest<Result>
         {
             public Guid Id { get; set; }
+        }
+
+        public class QueryValidator : AbstractValidator<Query>
+        {
+            public QueryValidator()
+            {
+                RuleFor(q => q.Id).NotNull().NotEmpty();
+            }
         }
 
         public class Result

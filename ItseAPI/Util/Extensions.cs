@@ -29,5 +29,8 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Util
 
             return stringBuilder.ToString().Normalize(NormalizationForm.FormC).ToUpper();
         }
+
+        public static bool NotEquals(this object obj1, object obj2) => !obj1.Equals(obj2);
+
     }
 }
