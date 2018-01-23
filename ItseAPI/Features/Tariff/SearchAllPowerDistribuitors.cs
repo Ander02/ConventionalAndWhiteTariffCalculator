@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
 {
-    public class SearchManyPowerDistribuitors
+    public class SearchAllPowerDistribuitors
     {
         public class Query : IRequest<List<Result>>
         {
-            public string Name { get; set; } = "";
+
         }
 
         public class Result
@@ -32,10 +32,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
 
             public async Task<List<Result>> Handle(Query query)
             {
-                if (query.Name == null) query.Name = "";
-
                 var q = db.PowerDistribuitor
-                    .Where(p => p.Name.Contains(query.Name))
                     .OrderBy(p => p.Name)
                     .AsQueryable();
 

@@ -51,7 +51,7 @@ namespace ConventionalAndWhiteTariffCalculator
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(builder => builder.AllowAnyOrigin().WithMethods(new string[] { "GET", "POST", "OPTIONS" }).AllowAnyHeader());
 
             app.UseMiddleware<HttpExceptionHandlerMiddleware>();
             app.UseMvc();

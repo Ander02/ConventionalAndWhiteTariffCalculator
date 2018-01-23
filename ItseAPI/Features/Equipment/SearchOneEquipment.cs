@@ -1,4 +1,5 @@
 ﻿using ConventionalAndWhiteTariffCalculator.Infraestructure;
+using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using FluentValidation;
 using MediatR;
 using System;
@@ -38,12 +39,14 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
 
             public async Task<Result> Handle(Query query)
             {
-                var p = await db.Equipament.FindAsync(query.Id);
+                var equipment = await db.Equipament.FindAsync(query.Id);
+
+                if (equipment == null) throw new NotFoundException("Equipamento com id " + query.Id + " não foi encontrado");
 
                 return new Result()
                 {
-                    Name = p.Name,
-                    DefaultPower = p.DefaultPower
+                    Name = equipment.Name,
+                    DefaultPower = equipment.DefaultPower
                 };
             }
         }

@@ -27,7 +27,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
 
         [HttpGet]
         [Route("/powerdistribuitors")]
-        public async Task<List<SearchManyPowerDistribuitors.Result>> SearchManyPowerDistribuitor([FromQuery] SearchManyPowerDistribuitors.Query query)
+        public async Task<List<SearchAllPowerDistribuitors.Result>> SearchManyPowerDistribuitor([FromQuery] SearchAllPowerDistribuitors.Query query)
         {
             var result = await mediator.Send(query);
 

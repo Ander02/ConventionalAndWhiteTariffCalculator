@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
 {
@@ -27,7 +26,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
         */
 
         [HttpGet]
-        public async Task<List<SearchManyEquipments.Result>> SearchManyEquipaments([FromQuery] SearchManyEquipments.Query query)
+        public async Task<List<SearchManyEquipments.Result>> SearchManyEquipments([FromQuery] SearchManyEquipments.Query query)
         {
             var result = await mediator.Send(query);
 
@@ -36,7 +35,7 @@ namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<SearchOneEquipment.Result> SearchOneEquipament([FromRoute] SearchOneEquipment.Query query)
+        public async Task<SearchOneEquipment.Result> SearchOneEquipment([FromRoute] SearchOneEquipment.Query query)
         {
             var result = await mediator.Send(query);
 
