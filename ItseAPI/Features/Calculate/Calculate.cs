@@ -4,16 +4,23 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using FluentValidation;
+using System.Linq;
 using ConventionalAndWhiteTariffCalculatorAPI.Util;
 
 namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
 {
     public class Calculate
     {
-        public class Command : IRequest<Result>
+        public class Command : IRequest<List<Result>>
         {
             public Guid PowerDistribuitorId { get; set; }
             public int Month { get; set; }
+            public List<EquipmentUse> Equipments { get; set; }
+        }
+
+        public class EquipmentUse
+        {
+            public int Id { get; set; }
             public double? Power { get; set; }
             public int? Quantity { get; set; }
             public List<DateInitAndFinish> UseOfMonth { get; set; }
@@ -24,54 +31,75 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
             public CommandValidator()
             {
                 RuleFor(c => c.PowerDistribuitorId).NotEmpty().NotNull();
-                RuleFor(c => c.Power).NotNull().GreaterThanOrEqualTo(0);
                 RuleFor(c => c.Month).NotEmpty().NotNull().GreaterThan(0).LessThanOrEqualTo(12);
 
-                RuleFor(c => c.Quantity).NotNull().GreaterThanOrEqualTo(0);
+                RuleFor(c => c).NotNull().Custom((command, context) =>
+                {
+                    if (command.Equipments == null) context.AddFailure("Lista com equipamentos não pode ser nula");
 
-                RuleFor(c => new { c.UseOfMonth, c.Month }).NotNull().Custom((obj, context) =>
-                 {
-                     if (obj.UseOfMonth == null) context.AddFailure("Lista com datas e horários não pode ser nula");
+                    else foreach (var equip in command.Equipments)
+                        {
+                            if (equip.Id <= 0) context.AddFailure("Id de um dos equipamentos é inválido");
 
-                     else foreach (var item in obj.UseOfMonth)
-                         {
-                             if (item.TimeInit == null) context.AddFailure("Hora de início não pode ser nula");
+                            if (equip.Power == null || equip.Power.Value <= 0) context.AddFailure("Potência de um dos equipamentos não é válido");
 
-                             if (item.TimeFinish == null) context.AddFailure("Hora de término não pode ser nula");
+                            if (equip.Quantity == null || equip.Quantity.Value <= 0) context.AddFailure("Quantidade de um dos equipamentos não é válido");
 
-                             if (item.TimeInit == null) context.AddFailure("Data de início não pode ser nula");
+                            if (equip.UseOfMonth == null) context.AddFailure("Lista com datas e horários não pode ser nula");
 
-                             if (item.TimeFinish == null) context.AddFailure("Data de término não pode ser nula");
+                            else foreach (var date in equip.UseOfMonth)
+                                {
+                                    if (date.TimeInit.HasValue)
+                                    {
+                                        if (date.TimeInit.Value < new TimeSpan(0, 0, 0)) context.AddFailure("Hora de início deve ser positiva");
+                                        if (date.TimeInit.Value > new TimeSpan(23, 59, 59)) context.AddFailure("Hora de início inválida");
+                                    }
+                                    else context.AddFailure("Hora de início não pode ser nula");
 
-                             if (item.TimeInit.Value < new TimeSpan(0, 0, 0)) context.AddFailure("Hora de início deve ser positiva");
+                                    if (date.TimeFinish.HasValue)
+                                    {
+                                        if (date.TimeFinish.Value < new TimeSpan(0, 0, 0)) context.AddFailure("Hora de fim deve ser positiva");
+                                        if (date.TimeFinish.Value > new TimeSpan(23, 59, 59)) context.AddFailure("Hora de fim inválida");
+                                    }
+                                    else context.AddFailure("Hora de fim não pode ser nula");
 
-                             if (item.TimeFinish.Value < new TimeSpan(0, 0, 0)) context.AddFailure("Hora de fim deve ser positiva");
+                                    if (date.DateInit.HasValue)
+                                    {
+                                        if (date.DateInit.Value.Month.NotEquals(command.Month)) context.AddFailure("Data de início contém mês inválido");
 
-                             if (item.TimeInit.Value > new TimeSpan(23, 59, 59)) context.AddFailure("Hora de início inválida");
+                                    }
+                                    else context.AddFailure("Data de início não pode ser nula");
 
-                             if (item.TimeFinish.Value > new TimeSpan(23, 59, 59)) context.AddFailure("Hora de fim inválida");
+                                    if (date.DateFinish.HasValue)
+                                    {
+                                        if (date.DateFinish.Value.Month.NotEquals(command.Month)) context.AddFailure("Data de fim contém mês inválido");
+                                    }
+                                    else context.AddFailure("Data de fim não pode ser nula");
 
-                             if (item.DateInit.Value > item.DateFinish.Value) context.AddFailure("Data de início deve ser antes da data de fim");
+                                    if (date.DateInit.HasValue && date.DateInit.HasValue)
+                                    {
+                                        if (date.DateInit.Value > date.DateFinish.Value) context.AddFailure("Data de início deve ser antes da data de fim");
+                                    }
 
-                             if (item.TimeInit.Value > item.TimeFinish.Value) context.AddFailure("Hora de início deve ser antes da Hora de fim");
-
-                             if (item.DateInit.Value.Month.NotEquals(obj.Month)) context.AddFailure("Data de início contém mês inválido");
-
-                             if (item.DateFinish.Value.Month.NotEquals(obj.Month)) context.AddFailure("Data de fim contém mês inválido");
-
-                         }
-                 });
+                                    if (date.TimeInit.HasValue && date.TimeInit.HasValue)
+                                    {
+                                        if (date.TimeInit.Value > date.TimeFinish.Value) context.AddFailure("Hora de início deve ser antes da Hora de fim");
+                                    }
+                                }
+                        }
+                });
             }
         }
 
         public class Result
         {
+            public int Id { get; set; }
             public string TimeOfUse { get; set; }
             public double WhiteTariffEnergySpending { get; set; }
             public double ConventionalTariffEnergySpending { get; set; }
         }
 
-        public class Handler : IAsyncRequestHandler<Command, Result>
+        public class Handler : IAsyncRequestHandler<Command, List<Result>>
         {
             private readonly Db db;
 
@@ -80,16 +108,38 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
                 this.db = db;
             }
 
-            public async Task<Result> Handle(Command req)
+            public async Task<List<Result>> Handle(Command req)
             {
-                var tariffDetail = await TariffUtil.AllTariffCalc(db, req.PowerDistribuitorId, req.Power.Value, req.Quantity.Value, req.UseOfMonth);
+                /*var tariffs = new List<TariffUtil.TariffDetail>();
 
-                return new Result()
+                foreach (var item in req.Equipments)
                 {
-                    ConventionalTariffEnergySpending = tariffDetail.ConventionalTariffValue,
-                    WhiteTariffEnergySpending = tariffDetail.WhiteTariffValue,
-                    TimeOfUse = tariffDetail.TimeOfUse
-                };
+                    var tariffDetail = await TariffUtil.AllTariffCalc(db, req.PowerDistribuitorId, item.Id, item.Power.Value, item.Quantity.Value, item.UseOfMonth);
+                    tariffs.Add(tariffDetail);
+                }
+
+                return tariffs.Select(t => new Result()
+                {
+                    Id = t.Id,
+                    ConventionalTariffEnergySpending = t.ConventionalTariffValue,
+                    WhiteTariffEnergySpending = t.WhiteTariffValue,
+                    TimeOfUse = t.TimeOfUse
+                }).ToList();*/
+
+                var resultList = new List<Result>();
+                foreach (var item in req.Equipments)
+                {
+                    var tariffDetail = await TariffUtil.AllTariffCalc(db, req.PowerDistribuitorId, item.Id, item.Power.Value, item.Quantity.Value, item.UseOfMonth);
+                    resultList.Add(new Result()
+                    {
+                        Id = item.Id,
+                        TimeOfUse = tariffDetail.TimeOfUse,
+                        ConventionalTariffEnergySpending = tariffDetail.ConventionalTariffValue,
+                        WhiteTariffEnergySpending = tariffDetail.WhiteTariffValue
+                    });
+                }
+
+                return resultList;
             }
         }
     }

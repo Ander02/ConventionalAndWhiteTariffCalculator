@@ -6,7 +6,6 @@ using DateTimeExtensions;
 using DateTimeExtensions.TimeOfDay;
 using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using Microsoft.EntityFrameworkCore;
-using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 
 namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
 {
@@ -14,6 +13,7 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
     {
         public class TariffDetail
         {
+            public int Id { get; set; }
             public double ConventionalTariffValue { get; set; }
             public double WhiteTariffValue { get; set; }
             public string TimeOfUse { get; set; }
@@ -25,7 +25,7 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
         }
 
         //Método que calcula o valor da tarifa convencional e branca
-        public static async Task<TariffDetail> AllTariffCalc(Db dataBaseContext, Guid powerDistribuitorId, double power, int quantity, List<DateInitAndFinish> useOfMonth)
+        public static async Task<TariffDetail> AllTariffCalc(Db dataBaseContext, Guid powerDistribuitorId, int id, double power, int quantity, List<DateInitAndFinish> useOfMonth)
         {
             double equipConsume = 0;
             double whiteTariffTotal = 0;
@@ -74,6 +74,7 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
             //Detalhes da tarifa
             var tariffDetail = new TariffDetail()
             {
+                Id = id,
                 ConventionalTariffValue = conventionalTariffTotal,
                 WhiteTariffValue = whiteTariffTotal,
             };
@@ -87,7 +88,7 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
             else if (useTime.Minutes == 0) tariffDetail.TimeOfUse = useTime.Days * 24 + useTime.Hours + "h";
 
             else tariffDetail.TimeOfUse = useTime.Days * 24 + useTime.Hours + "h" + useTime.Minutes + "min";
-            
+
             return tariffDetail;
         }
 
