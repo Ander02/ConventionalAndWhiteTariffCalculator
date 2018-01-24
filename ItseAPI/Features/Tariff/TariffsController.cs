@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
+namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Tariff
 {
     [Route("/[controller]")]
     public class TariffsController : Controller

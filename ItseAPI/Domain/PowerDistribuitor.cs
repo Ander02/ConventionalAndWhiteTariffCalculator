@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ConventionalAndWhiteTariffCalculator.Domain
+namespace ConventionalAndWhiteTariffCalculatorAPI.Domain
 {
     public class PowerDistribuitor
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConventionalAndWhiteTariffCalculator.Domain
+namespace ConventionalAndWhiteTariffCalculatorAPI.Domain
 {
     public class Tariff
     {

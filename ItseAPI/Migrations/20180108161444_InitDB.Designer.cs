@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
-using ConventionalAndWhiteTariffCalculator.Infraestructure;
+using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 
-namespace ConventionalAndWhiteTariffCalculator.Migrations
+namespace ConventionalAndWhiteTariffCalculatorAPI.Migrations
 {
     [DbContext(typeof(Db))]
     [Migration("20180108161444_InitDB")]

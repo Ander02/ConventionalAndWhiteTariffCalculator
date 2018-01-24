@@ -1,4 +1,4 @@
-﻿using ConventionalAndWhiteTariffCalculator.Infraestructure;
+﻿using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using ConventionalAndWhiteTariffCalculatorAPI.Util;
 using FluentValidation;
 using MediatR;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
+namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Equipment
 {
     public class SearchManyEquipments
     {

@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ConventionalAndWhiteTariffCalculator.Infraestructure;
+using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using FluentValidation;
 using ConventionalAndWhiteTariffCalculatorAPI.Util;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
+namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
 {
     public class Calculate
     {

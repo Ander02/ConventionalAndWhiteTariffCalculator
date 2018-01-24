@@ -1,11 +1,11 @@
-﻿using ConventionalAndWhiteTariffCalculator.Infraestructure;
+﻿using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using FluentValidation;
 using MediatR;
 using System;
 using System.Threading.Tasks;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
+namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Equipment
 {
     public class SearchOneEquipment
     {

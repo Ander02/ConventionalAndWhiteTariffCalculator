@@ -1,4 +1,4 @@
-﻿using ConventionalAndWhiteTariffCalculator.Infraestructure;
+﻿using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Text;

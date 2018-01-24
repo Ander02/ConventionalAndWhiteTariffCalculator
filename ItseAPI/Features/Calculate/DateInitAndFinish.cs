@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
+namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
 {
     public class DateInitAndFinish
     {

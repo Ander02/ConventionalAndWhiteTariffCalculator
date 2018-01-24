@@ -1,11 +1,11 @@
-﻿using ConventionalAndWhiteTariffCalculator.Infraestructure;
+﻿using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
+namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Tariff
 {
     public class SearchManyTariffs
     {

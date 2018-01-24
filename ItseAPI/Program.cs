@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
-using ConventionalAndWhiteTariffCalculator.Infraestructure;
+using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ConventionalAndWhiteTariffCalculator
+namespace ConventionalAndWhiteTariffCalculatorAPI
 {
     public class Program
     {

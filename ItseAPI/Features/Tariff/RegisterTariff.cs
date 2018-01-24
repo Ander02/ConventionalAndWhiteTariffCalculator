@@ -2,9 +2,9 @@
 using MediatR;
 using System;
 using System.Threading.Tasks;
-using ConventionalAndWhiteTariffCalculator.Infraestructure;
+using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
+namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Tariff
 {
     public partial class RegisterTariff
     {

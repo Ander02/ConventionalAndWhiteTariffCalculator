@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ConventionalAndWhiteTariffCalculator.Infraestructure;
+using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using FluentValidation.AspNetCore;
 using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 
-namespace ConventionalAndWhiteTariffCalculator
+namespace ConventionalAndWhiteTariffCalculatorAPI
 {
     public class Startup
     {

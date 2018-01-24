@@ -1,4 +1,4 @@
-﻿namespace ConventionalAndWhiteTariffCalculator.Infraestructure
+﻿namespace ConventionalAndWhiteTariffCalculatorAPI.Infraestructure
 {
     public class ExceptionResult
     {

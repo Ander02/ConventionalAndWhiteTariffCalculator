@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ConventionalAndWhiteTariffCalculator.Domain;
+using ConventionalAndWhiteTariffCalculatorAPI.Domain;
 
-namespace ConventionalAndWhiteTariffCalculator.Infraestructure
+namespace ConventionalAndWhiteTariffCalculatorAPI.Infraestructure
 {
     public class Db : DbContext
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Tariff
+namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Tariff
 {
     public class PowerDistribuitorAux
     {

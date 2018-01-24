@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using ConventionalAndWhiteTariffCalculator.Domain;
+using ConventionalAndWhiteTariffCalculatorAPI.Domain;
 
-namespace ConventionalAndWhiteTariffCalculator.Infraestructure
+namespace ConventionalAndWhiteTariffCalculatorAPI.Infraestructure
 {
     public class DbInitializer
     {

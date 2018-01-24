@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Equipment
+namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Equipment
 {
     [Route("/[controller]")]
     public class EquipmentsController : Controller

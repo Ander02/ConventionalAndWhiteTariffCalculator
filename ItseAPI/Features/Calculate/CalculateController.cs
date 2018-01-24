@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace ConventionalAndWhiteTariffCalculator.Features.Calculate
+namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
 {
     [Route("/[controller]")]
     public class CalculateController : Controller

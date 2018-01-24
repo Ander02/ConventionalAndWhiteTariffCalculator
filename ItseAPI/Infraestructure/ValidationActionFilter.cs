@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using System.Linq;
 
-namespace ConventionalAndWhiteTariffCalculator.Infraestructure
+namespace ConventionalAndWhiteTariffCalculatorAPI.Infraestructure
 {
     public class ValidationActionFilter : IActionFilter
     {
