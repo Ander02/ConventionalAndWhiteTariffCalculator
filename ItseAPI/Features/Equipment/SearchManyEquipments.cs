@@ -22,7 +22,7 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Equipment
         {
             public QueryValidator()
             {
-                RuleFor(q => q.Limit).NotNull().GreaterThanOrEqualTo(0);
+                RuleFor(q => q.Limit).GreaterThanOrEqualTo(0);
             }
         }
 
@@ -47,10 +47,9 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Equipment
 
                 var equips = await db.Equipament
                     .OrderBy(p => p.Name)
-                    .Take(query.Limit)
                     .ToListAsync();
 
-                var result = equips.Where(p => p.Name.RemoveAcentuation().ToLower().Contains(query.Name.RemoveAcentuation().ToLower())).ToList();
+                var result = equips.Where(p => p.Name.RemoveAcentuation().ToLower().Contains(query.Name.RemoveAcentuation().ToLower())).Take(query.Limit).ToList();
 
                 return result.Select(p => new Result
                 {

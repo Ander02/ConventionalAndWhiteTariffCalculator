@@ -25,7 +25,7 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
         }
 
         //Método que calcula o valor da tarifa convencional e branca
-        public static async Task<TariffDetail> AllTariffCalc(Db dataBaseContext, Guid powerDistribuitorId, int id, double power, int quantity, List<DateInitAndFinish> useOfMonth)
+        public static async Task<TariffDetail> AllTariffCalc(Db dataBaseContext, Guid powerDistribuitorId, double power, int quantity, List<DateInitAndFinish> useOfMonth)
         {
             double equipConsume = 0;
             double whiteTariffTotal = 0;
@@ -74,7 +74,6 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
             //Detalhes da tarifa
             var tariffDetail = new TariffDetail()
             {
-                Id = id,
                 ConventionalTariffValue = conventionalTariffTotal,
                 WhiteTariffValue = whiteTariffTotal,
             };

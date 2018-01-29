@@ -20,7 +20,6 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
 
         public class EquipmentUse
         {
-            public int Id { get; set; }
             public double? Power { get; set; }
             public int? Quantity { get; set; }
             public List<DateInitAndFinish> UseOfMonth { get; set; }
@@ -39,8 +38,6 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
 
                     else foreach (var equip in command.Equipments)
                         {
-                            if (equip.Id <= 0) context.AddFailure("Id de um dos equipamentos é inválido");
-
                             if (equip.Power == null || equip.Power.Value <= 0) context.AddFailure("Potência de um dos equipamentos não é válido");
 
                             if (equip.Quantity == null || equip.Quantity.Value <= 0) context.AddFailure("Quantidade de um dos equipamentos não é válido");
@@ -129,10 +126,9 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
                 var resultList = new List<Result>();
                 foreach (var item in req.Equipments)
                 {
-                    var tariffDetail = await TariffUtil.AllTariffCalc(db, req.PowerDistribuitorId, item.Id, item.Power.Value, item.Quantity.Value, item.UseOfMonth);
+                    var tariffDetail = await TariffUtil.AllTariffCalc(db, req.PowerDistribuitorId, item.Power.Value, item.Quantity.Value, item.UseOfMonth);
                     resultList.Add(new Result()
                     {
-                        Id = item.Id,
                         TimeOfUse = tariffDetail.TimeOfUse,
                         ConventionalTariffEnergySpending = tariffDetail.ConventionalTariffValue,
                         WhiteTariffEnergySpending = tariffDetail.WhiteTariffValue
