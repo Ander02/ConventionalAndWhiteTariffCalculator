@@ -90,7 +90,6 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
 
         public class Result
         {
-            public int Id { get; set; }
             public string TimeOfUse { get; set; }
             public double WhiteTariffEnergySpending { get; set; }
             public double ConventionalTariffEnergySpending { get; set; }
@@ -107,22 +106,6 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
 
             public async Task<List<Result>> Handle(Command req)
             {
-                /*var tariffs = new List<TariffUtil.TariffDetail>();
-
-                foreach (var item in req.Equipments)
-                {
-                    var tariffDetail = await TariffUtil.AllTariffCalc(db, req.PowerDistribuitorId, item.Id, item.Power.Value, item.Quantity.Value, item.UseOfMonth);
-                    tariffs.Add(tariffDetail);
-                }
-
-                return tariffs.Select(t => new Result()
-                {
-                    Id = t.Id,
-                    ConventionalTariffEnergySpending = t.ConventionalTariffValue,
-                    WhiteTariffEnergySpending = t.WhiteTariffValue,
-                    TimeOfUse = t.TimeOfUse
-                }).ToList();*/
-
                 var resultList = new List<Result>();
                 foreach (var item in req.Equipments)
                 {
@@ -130,8 +113,8 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
                     resultList.Add(new Result()
                     {
                         TimeOfUse = tariffDetail.TimeOfUse,
-                        ConventionalTariffEnergySpending = tariffDetail.ConventionalTariffValue,
-                        WhiteTariffEnergySpending = tariffDetail.WhiteTariffValue
+                        ConventionalTariffEnergySpending = Math.Round(tariffDetail.ConventionalTariffValue, 2),
+                        WhiteTariffEnergySpending = Math.Round(tariffDetail.WhiteTariffValue, 2)
                     });
                 }
 
