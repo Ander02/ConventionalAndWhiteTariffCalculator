@@ -73,12 +73,12 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
                                     }
                                     else context.AddFailure("Data de fim não pode ser nula");
 
-                                    if (date.DateInit.HasValue && date.DateInit.HasValue)
+                                    if (date.DateInit.HasValue && date.DateFinish.HasValue)
                                     {
                                         if (date.DateInit.Value > date.DateFinish.Value) context.AddFailure("Data de início deve ser antes da data de fim");
                                     }
 
-                                    if (date.TimeInit.HasValue && date.TimeInit.HasValue)
+                                    if (date.TimeInit.HasValue && date.TimeFinish.HasValue)
                                     {
                                         if (date.TimeInit.Value > date.TimeFinish.Value) context.AddFailure("Hora de início deve ser antes da Hora de fim");
                                     }
