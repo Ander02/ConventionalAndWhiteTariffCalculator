@@ -15,15 +15,15 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Equipment
             this.mediator = mediator;
         }
 
-        /*
-            [HttpPost]
-            public async Task<ActionResult> RegisterEquipament([FromBody] RegisterEquipment.Command value)
-            {
-                var result = await mediator.Send(value);
 
-                return Created(this.Request.Path.Value + "/" + result.Id, result);
-            }
-        */
+        [HttpPost]
+        public async Task<ActionResult> RegisterEquipament([FromBody] RegisterEquipment.Command value)
+        {
+            var result = await mediator.Send(value);
+
+            return Created(this.Request.Path.Value + "/" + result.Id, result);
+        }
+
 
         [HttpGet]
         public async Task<List<SearchManyEquipments.Result>> SearchManyEquipments([FromQuery] SearchManyEquipments.Query query)
