@@ -18,6 +18,7 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Tariff
         [HttpGet]
         public async Task<List<SearchAllPowerDistribuitors.Result>> SearchManyPowerDistribuitor([FromQuery] SearchAllPowerDistribuitors.Query query)
         {
+            //Console.Beep(new Random().Next(500,5000),750);
             var result = await mediator.Send(query);
 
             return result;
@@ -32,6 +33,5 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Tariff
 
             return result;
         }
-
     }
 }

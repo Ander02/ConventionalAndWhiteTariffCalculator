@@ -1,5 +1,4 @@
 ﻿using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
-using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

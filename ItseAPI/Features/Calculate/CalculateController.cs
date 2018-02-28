@@ -18,7 +18,7 @@ namespace ConventionalAndWhiteTariffCalculatorAPI.Features.Calculate
         [HttpPost]
         public async Task<List<Calculate.Result>> Calculate([FromBody] Calculate.Command value)
         {
-            var result = await mediator.Send(value);
+            var result = await mediator.Send(value); 
 
             return result;
         }

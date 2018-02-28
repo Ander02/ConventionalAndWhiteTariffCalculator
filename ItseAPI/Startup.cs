@@ -6,7 +6,6 @@ using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using FluentValidation.AspNetCore;
-using ConventionalAndWhiteTariffCalculatorAPI.Infraestructure;
 
 namespace ConventionalAndWhiteTariffCalculatorAPI
 {
